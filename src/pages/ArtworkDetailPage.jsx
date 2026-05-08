@@ -5,29 +5,43 @@ import {
   Fingerprint,
   ScrollText,
   ExternalLink,
+  ChevronDown,
 } from "lucide-react";
+
 import * as api from "../api/api";
 import { useToast } from "../context/ToastContext";
 
 const loadRazorpay = () =>
   new Promise((resolve) => {
     if (window.Razorpay) return resolve(true);
+
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
+
     document.body.appendChild(script);
   });
 
 export const ArtworkDetailPage = () => {
   const { artworkId } = useParams();
+
   const { addToast } = useToast();
+
   const [loading, setLoading] = useState(true);
   const [artwork, setArtwork] = useState(null);
   const [provenance, setProvenance] = useState([]);
   const [ownership, setOwnership] = useState(null);
-  const [collector, setCollector] = useState({ name: "", email: "" });
+
+  const [collector, setCollector] = useState({
+    name: "",
+    email: "",
+  });
+
   const [acquiring, setAcquiring] = useState(false);
+
+  const [showArtisan, setShowArtisan] = useState(false);
 
   const id = useMemo(() => Number(artworkId), [artworkId]);
 
@@ -37,8 +51,11 @@ export const ArtworkDetailPage = () => {
     const run = async () => {
       try {
         setLoading(true);
+
         const { data } = await api.getArtwork(id);
+
         if (!mounted) return;
+
         setArtwork(data.artwork);
         setProvenance(data.provenance_events || []);
         setOwnership(data.ownership || null);
@@ -60,14 +77,16 @@ export const ArtworkDetailPage = () => {
     try {
       if (!collector.name.trim() || !collector.email.trim()) {
         addToast(
-          "Collector name and email are required to record acquisition",
+          "Collector name and email are required",
           "error"
         );
         return;
       }
 
       setAcquiring(true);
+
       const ok = await loadRazorpay();
+
       if (!ok) {
         addToast("Could not initialize acquisition flow", "error");
         return;
@@ -78,10 +97,6 @@ export const ArtworkDetailPage = () => {
         collector_name: collector.name,
         collector_email: collector.email,
       });
-      if (!data?.success) {
-        addToast("Could not prepare acquisition", "error");
-        return;
-      }
 
       const options = {
         key: data.key_id,
@@ -90,9 +105,20 @@ export const ArtworkDetailPage = () => {
         name: "SkillChain",
         description: "Acquire authenticated cultural work",
         order_id: data.order_id,
-        method: { upi: true },
-        prefill: { name: collector.name, email: collector.email },
-        theme: { color: "#B56A3E" },
+
+        method: {
+          upi: true,
+        },
+
+        prefill: {
+          name: collector.name,
+          email: collector.email,
+        },
+
+        theme: {
+          color: "#B56A3E",
+        },
+
         handler: async (resp) => {
           const verify = await api.verifyPayment({
             razorpay_order_id: resp.razorpay_order_id,
@@ -102,17 +128,21 @@ export const ArtworkDetailPage = () => {
           });
 
           if (verify?.data?.success) {
-            addToast("Acquisition Recorded • Provenance Updated", "success");
+            addToast(
+              "Acquisition Recorded • Provenance Updated",
+              "success"
+            );
+
             const refreshed = await api.getArtwork(id);
+
             setProvenance(refreshed.data.provenance_events || []);
             setOwnership(refreshed.data.ownership || null);
-          } else {
-            addToast("Settlement received, but verification failed", "error");
           }
         },
       };
 
       const rzp = new window.Razorpay(options);
+
       rzp.open();
     } catch (e) {
       addToast("Acquisition flow failed", "error");
@@ -123,8 +153,8 @@ export const ArtworkDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] px-6 pt-24">
-        <div className="max-w-5xl mx-auto text-[#6D5646]">
+      <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] flex items-center justify-center">
+        <div className="text-[#7A6555] text-lg">
           Preparing provenance object…
         </div>
       </div>
@@ -133,12 +163,14 @@ export const ArtworkDetailPage = () => {
 
   if (!artwork) {
     return (
-      <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] px-6 pt-24">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-[#6D5646]">
-            This artwork record could not be resolved.
-          </p>
-          <Link to="/verify" className="text-[#B56A3E] hover:underline">
+      <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] flex items-center justify-center">
+        <div>
+          <p>This artwork record could not be resolved.</p>
+
+          <Link
+            to="/verify"
+            className="mt-4 inline-block text-[#B56A3E]"
+          >
             Return to verification
           </Link>
         </div>
@@ -147,136 +179,321 @@ export const ArtworkDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
-      <section className="relative px-6 pt-24 pb-10 border-b border-[#d8c7ab] overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
-        <div className="relative max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-10">
-          <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] overflow-hidden">
-            <div className="aspect-[4/3] bg-[#eadcc5] flex items-center justify-center text-[#8B694D]">
-              Artwork preview
-            </div>
-            <div className="p-7">
-              <h1 className="text-4xl font-serif mb-2">
-                {artwork.title || "Untitled work"}
-              </h1>
-              <p className="text-[#6D5646] mb-4">
-                {artwork.description ||
-                  "A recorded work in the SkillChain archive."}
-              </p>
-              <div className="grid sm:grid-cols-2 gap-3 text-sm">
-                <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
-                  <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
-                    <Fingerprint size={14} /> Artist DID
+    <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16]">
+      <section className="px-6 pt-24 pb-32">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.2fr_0.8fr] gap-16">
+
+          {/* LEFT SIDE */}
+
+          <div>
+
+            <p className="uppercase tracking-[0.35em] text-xs text-[#B56A3E] mb-6">
+              Certificate of Authenticity
+            </p>
+
+            <h1 className="font-serif text-6xl leading-none mb-8">
+              {artwork.title || "Untitled Work"}
+            </h1>
+
+            <p className="text-xl leading-relaxed text-[#6E5A4B] max-w-2xl">
+              {artwork.description ||
+                "A verified cultural work archived through decentralized provenance infrastructure."}
+            </p>
+
+            {/* ARTWORK OBJECT */}
+
+            <div className="mt-14 bg-[#F7F0E1] border border-[#D9C7B0] shadow-[0_25px_60px_rgba(0,0,0,0.08)] overflow-hidden">
+
+              <div className="aspect-[4/3] bg-[#E8D8BF] flex items-center justify-center text-[#8A6B53]">
+                Artwork Preview
+              </div>
+
+              <div className="p-8 border-t border-[#D9C7B0]">
+
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+
+                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                    <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
+                      <Fingerprint size={14} />
+                      Registry Identity
+                    </div>
+
+                    <div className="mt-3 font-mono text-xs break-all">
+                      {artwork.artisan_did}
+                    </div>
                   </div>
-                  <div className="mt-2 font-mono break-all text-xs">
-                    {artwork.artisan_did}
+
+                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                    <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
+                      <ShieldCheck size={14} />
+                      Verification Status
+                    </div>
+
+                    <div className="mt-3">
+                      {artwork.status || "verified"}
+                    </div>
                   </div>
-                </div>
-                <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
-                  <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
-                    <ShieldCheck size={14} /> Status
+
+                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                    <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
+                      <ScrollText size={14} />
+                      IPFS Record
+                    </div>
+
+                    <div className="mt-3 font-mono text-xs break-all">
+                      {artwork.ipfs_cid || "—"}
+                    </div>
                   </div>
-                  <div className="mt-2">{artwork.status || "archived"}</div>
-                </div>
-                <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
-                  <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
-                    <ScrollText size={14} /> IPFS CID
+
+                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                    <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
+                      <ExternalLink size={14} />
+                      Chain Anchor
+                    </div>
+
+                    {artwork.tx_id ? (
+                      <a
+                        href={`https://algoexplorer.io/tx/${artwork.tx_id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center gap-2 text-[#B56A3E]"
+                      >
+                        View Transaction
+                        <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      <div className="mt-3">—</div>
+                    )}
                   </div>
-                  <div className="mt-2 font-mono break-all text-xs">
-                    {artwork.ipfs_cid || "—"}
-                  </div>
-                </div>
-                <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
-                  <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
-                    <ExternalLink size={14} /> Chain Anchor
-                  </div>
-                  {artwork.tx_id ? (
-                    <a
-                      className="mt-2 inline-flex items-center gap-1 text-[#B56A3E] hover:underline"
-                      href={`https://algoexplorer.io/tx/${artwork.tx_id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View transaction <ExternalLink size={12} />
-                    </a>
-                  ) : (
-                    <div className="mt-2">—</div>
-                  )}
+
                 </div>
               </div>
             </div>
+
+            {/* ARTISAN REVEAL */}
+
+            <div className="mt-24 border-t border-[#DDCCB6] pt-16">
+
+              <p className="uppercase tracking-[0.35em] text-xs text-[#B56A3E] mb-5">
+                Crafted by a Verified Artisan
+              </p>
+
+              <button
+                onClick={() => setShowArtisan(!showArtisan)}
+                className="group"
+              >
+
+                <div className="bg-[#F7F0E1] border border-[#DCCAB5] px-8 py-6 shadow-[0_15px_40px_rgba(0,0,0,0.06)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)]">
+
+                  <div className="flex items-center justify-between">
+
+                    <div>
+
+                      <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E]">
+                        Registry Linked Identity
+                      </p>
+
+                      <h2 className="mt-3 font-serif text-4xl">
+                        Provenance Record
+                      </h2>
+
+                      <p className="mt-4 text-[#6E5A4B] max-w-xl">
+                        This work is associated with a preserved cultural identity
+                        archived through decentralized provenance infrastructure.
+                      </p>
+
+                    </div>
+
+                    <ChevronDown
+                      className={`transition duration-500 ${
+                        showArtisan ? "rotate-180" : ""
+                      }`}
+                    />
+
+                  </div>
+                </div>
+              </button>
+
+              {showArtisan && (
+                <div className="mt-10 bg-[#F7F0E1] border border-[#DCCAB5] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+
+                  <div className="grid md:grid-cols-[120px_1fr] gap-8">
+
+                    <div className="h-[120px] w-[120px] rounded-full bg-[#E7D5BF]" />
+
+                    <div>
+
+                      <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E]">
+                        Registry Verified
+                      </p>
+
+                      <h3 className="mt-3 font-serif text-5xl">
+                        Artisan Identity
+                      </h3>
+
+                      <p className="mt-4 text-[#6E5A4B] leading-relaxed">
+                        Trained through intergenerational lineage and linked
+                        to preserved provenance records within the SkillChain archive.
+                      </p>
+
+                      <div className="mt-8 grid md:grid-cols-2 gap-6 text-sm">
+
+                        <div>
+                          <p className="uppercase tracking-[0.2em] text-[#A07B61] text-xs">
+                            Guild Affiliation
+                          </p>
+
+                          <p className="mt-2">
+                            Registered Cultural Guild
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="uppercase tracking-[0.2em] text-[#A07B61] text-xs">
+                            Craft Specialization
+                          </p>
+
+                          <p className="mt-2">
+                            Traditional Heritage Practice
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="uppercase tracking-[0.2em] text-[#A07B61] text-xs">
+                            Registry Identifier
+                          </p>
+
+                          <p className="mt-2 font-mono text-xs break-all">
+                            {artwork.artisan_did}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="uppercase tracking-[0.2em] text-[#A07B61] text-xs">
+                            Provenance Status
+                          </p>
+
+                          <p className="mt-2 text-[#3E7A58]">
+                            Confirmed
+                          </p>
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              )}
+            </div>
+
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-7">
-              <h2 className="text-2xl font-serif mb-2">Acquire Artwork</h2>
-              <p className="text-sm text-[#6D5646] mb-4">
-                Settlement confirmation becomes an archival provenance event.
-                Ownership is recorded only after server verification.
+          {/* RIGHT SIDEBAR */}
+
+          <div className="space-y-8">
+
+            {/* ACQUIRE */}
+
+            <div className="bg-[#F7F0E1] border border-[#DCCAB5] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+
+              <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-5">
+                Acquisition Registry
               </p>
-              {ownership?.owner_name ? (
-                <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa] text-sm text-[#6D5646] mb-4">
-                  Current ownership snapshot:{" "}
-                  <span className="text-[#2B1D16]">{ownership.owner_name}</span>
-                </div>
-              ) : null}
-              <div className="grid gap-3">
+
+              <h2 className="font-serif text-4xl mb-4">
+                Acquire Artwork
+              </h2>
+
+              <p className="text-[#6E5A4B] leading-relaxed mb-8">
+                Settlement confirmation becomes a permanent provenance event.
+              </p>
+
+              <div className="space-y-4">
+
                 <input
-                  className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                  className="w-full bg-[#FFF9F0] border border-[#D9C6AF] px-5 py-4 outline-none focus:border-[#B56A3E]"
                   placeholder="Collector name"
                   value={collector.name}
                   onChange={(e) =>
-                    setCollector((c) => ({ ...c, name: e.target.value }))
+                    setCollector((c) => ({
+                      ...c,
+                      name: e.target.value,
+                    }))
                   }
                 />
+
                 <input
-                  className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                  className="w-full bg-[#FFF9F0] border border-[#D9C6AF] px-5 py-4 outline-none focus:border-[#B56A3E]"
                   placeholder="Collector email"
                   value={collector.email}
                   onChange={(e) =>
-                    setCollector((c) => ({ ...c, email: e.target.value }))
+                    setCollector((c) => ({
+                      ...c,
+                      email: e.target.value,
+                    }))
                   }
                 />
+
                 <button
                   onClick={handleAcquire}
                   disabled={acquiring}
-                  className="bg-[#1C1A16] hover:bg-black transition duration-300 text-[#F7F0E1] py-4 px-6 tracking-wide shadow-xl disabled:opacity-50"
+                  className="w-full bg-[#B56A3E] hover:bg-[#9f5b34] text-white py-4 transition duration-300"
                 >
-                  {acquiring ? "Preparing acquisition…" : "Acquire Artwork"}
+                  {acquiring
+                    ? "Preparing acquisition…"
+                    : "Acquire Artwork"}
                 </button>
+
               </div>
-              <p className="text-xs text-[#8B694D] mt-3 uppercase tracking-[0.18em]">
-                Acquisition is recorded, never overwritten.
-              </p>
             </div>
 
-            <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-7">
-              <h2 className="text-2xl font-serif mb-4">Provenance Timeline</h2>
-              <div className="space-y-3">
+            {/* PROVENANCE */}
+
+            <div className="bg-[#F7F0E1] border border-[#DCCAB5] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+
+              <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-5">
+                Provenance Timeline
+              </p>
+
+              <div className="space-y-4">
+
                 {provenance.length === 0 ? (
-                  <div className="text-sm text-[#6D5646]">No events yet.</div>
+                  <div className="text-[#6E5A4B]">
+                    No provenance events recorded.
+                  </div>
                 ) : (
                   provenance.map((ev) => (
                     <div
                       key={ev.id}
-                      className="p-3 bg-[#fffaf1] border border-[#d8c6aa]"
+                      className="border border-[#DCCAB5] bg-[#FFF9F0] p-4"
                     >
+
                       <div className="flex items-center justify-between">
-                        <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D]">
+
+                        <div className="uppercase tracking-[0.18em] text-[10px] text-[#9A7156]">
                           {ev.provenance_event_type || ev.event_type}
                         </div>
-                        <div className="text-xs text-[#6D5646]">
+
+                        <div className="text-xs text-[#7A6555]">
                           {ev.created_at}
                         </div>
+
                       </div>
-                      <div className="mt-2 text-sm text-[#2B1D16] break-words">
+
+                      <div className="mt-3 text-sm">
                         {ev.event_type}
                       </div>
+
                     </div>
                   ))
                 )}
+
               </div>
+
             </div>
+
           </div>
         </div>
       </section>

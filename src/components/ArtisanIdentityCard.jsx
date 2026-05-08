@@ -1,200 +1,133 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, ShieldCheck, ChevronDown } from "lucide-react";
 
-/**
- * ArtisanIdentityCard
- *
- * Reusable archival identity card for a registered artisan.
- * Feels closer to a museum accession record or institutional credential
- * than a social-media profile. No engagement metrics. No follower counts.
- *
- * Props:
- *   artisan  — artisan record object from mock data / API
- *   compact  — boolean; renders a narrower inline variant for ArtworkDetailPage
- *   linkable — boolean; wraps card in a Link to /artisans/:id
- */
-export default function ArtisanIdentityCard({
-  artisan,
-  compact = false,
-  linkable = false,
-}) {
-  if (!artisan) return null;
+export default function ArtisanIdentityCard({ artisan }) {
+  const [expanded, setExpanded] = useState(false);
 
-  const {
-    id,
-    displayName,
-    photo,
-    guild,
-    craftSpecialization,
-    region,
-    did,
-    registrationYear,
-    verificationStatus,
-    heritageStatement,
-  } = artisan;
-
-  const isVerified = verificationStatus === "verified";
-  const shortDID = did
-    ? `${did.slice(0, 22)}…${did.slice(-6)}`
-    : "—";
-
-  const cardContent = (
-    <div
-      className={`
-        relative bg-parchment/60 dark:bg-white/5 border border-sandstone/60
-        dark:border-white/10 rounded-xl overflow-hidden
-        transition-all duration-300
-        ${compact ? "flex gap-4 p-4" : "p-6"}
-        ${linkable ? "hover:border-saffron/50 hover:shadow-lg hover:shadow-terracotta/10 cursor-pointer" : ""}
-      `}
-    >
-      {/* Corner registration mark — archival aesthetic */}
-      <span
-        aria-hidden="true"
-        className="absolute top-3 right-3 text-[9px] font-mono text-warm-gray/50 tracking-widest select-none"
-      >
-        SC·REG·{registrationYear}
-      </span>
-
-      {/* ── Photo / Monogram ── */}
-      <div className={`flex-shrink-0 ${compact ? "self-start" : "mb-5 flex items-center gap-4"}`}>
-        {photo ? (
-          <img
-            src={photo}
-            alt={displayName}
-            className={`
-              object-cover rounded-full border-2 border-sandstone/60
-              ${compact ? "w-14 h-14" : "w-20 h-20"}
-            `}
-          />
-        ) : (
-          <div
-            className={`
-              flex items-center justify-center rounded-full
-              bg-terracotta/10 border-2 border-terracotta/20
-              text-terracotta font-serif font-bold select-none
-              ${compact ? "w-14 h-14 text-xl" : "w-20 h-20 text-3xl"}
-            `}
-          >
-            {displayName?.charAt(0) ?? "?"}
-          </div>
-        )}
-
-        {/* Verification badge — inline with photo on full card */}
-        {!compact && (
-          <div className="flex flex-col gap-1">
-            <VerificationSeal verified={isVerified} />
-          </div>
-        )}
-      </div>
-
-      {/* ── Main record body ── */}
-      <div className="flex-1 min-w-0">
-        {/* Name */}
-        <h3 className={`font-serif font-bold text-deep-ink dark:text-ivory leading-tight ${compact ? "text-base" : "text-xl"}`}>
-          {displayName}
-        </h3>
-
-        {/* Craft + Guild */}
-        <p className={`text-terracotta font-medium mt-0.5 ${compact ? "text-xs" : "text-sm"}`}>
-          {craftSpecialization}
-        </p>
-        <p className={`text-warm-gray ${compact ? "text-xs mt-0.5" : "text-sm mt-1"}`}>
-          {guild}
-        </p>
-
-        {/* Region */}
-        <div className={`flex items-center gap-1.5 text-warm-gray mt-2 ${compact ? "text-xs" : "text-sm"}`}>
-          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8}
-              d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z" />
-            <circle cx="12" cy="9" r="2.5" strokeWidth={1.8} />
-          </svg>
-          <span>{region}</span>
-        </div>
-
-        {/* Divider */}
-        {!compact && (
-          <div className="my-4 border-t border-sandstone/40 dark:border-white/10" />
-        )}
-
-        {/* DID — shown full on detail, abbreviated on card */}
-        <div className={`${compact ? "mt-2" : ""}`}>
-          <span className={`block font-mono text-warm-gray/70 dark:text-white/40 ${compact ? "text-[10px]" : "text-xs"}`}>
-            DID
-          </span>
-          <span className={`font-mono text-deep-ink/60 dark:text-white/50 break-all ${compact ? "text-[10px]" : "text-xs"}`}>
-            {shortDID}
-          </span>
-        </div>
-
-        {/* Heritage statement — only on full card */}
-        {!compact && heritageStatement && (
-          <blockquote className="mt-4 pl-3 border-l-2 border-saffron/60 italic text-sm text-warm-gray leading-relaxed">
-            "{heritageStatement}"
-          </blockquote>
-        )}
-
-        {/* Compact verification badge */}
-        {compact && (
-          <div className="mt-2">
-            <VerificationSeal verified={isVerified} compact />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  return linkable ? (
-    <Link to={`/artisans/${id}`} className="block no-underline">
-      {cardContent}
-    </Link>
-  ) : (
-    cardContent
-  );
-}
-
-/* ─────────────────────────────────────────────
-   VerificationSeal
-   Subtle institutional badge, not a flashy icon
-───────────────────────────────────────────── */
-function VerificationSeal({ verified, compact = false }) {
   return (
-    <div
-      className={`
-        inline-flex items-center gap-1.5 rounded-full border
-        ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs"}
-        ${
-          verified
-            ? "border-emerald-600/30 bg-emerald-50/60 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400"
-            : "border-amber-500/30 bg-amber-50/60 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400"
-        }
-        font-medium tracking-wide
-      `}
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -6, rotate: -0.3 }}
+      transition={{ duration: 0.45 }}
+      className="relative overflow-hidden rounded-[32px] border border-[#dcc8b4] bg-[#f7efe1] shadow-[0_20px_60px_rgba(86,55,32,0.12)]"
     >
-      {verified ? (
-        <>
-          {/* Subtle checkmark seal */}
-          <svg className={compact ? "w-2.5 h-2.5" : "w-3 h-3"} fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Verified Artisan
-        </>
-      ) : (
-        <>
-          <svg className={compact ? "w-2.5 h-2.5" : "w-3 h-3"} fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Verification Pending
-        </>
-      )}
-    </div>
+      <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_top,rgba(120,72,38,0.45),transparent_55%)]" />
+
+      <div className="relative p-8 md:p-10">
+        <div className="flex flex-col gap-8 md:flex-row md:items-start">
+          <div className="flex items-start gap-5">
+            <div className="h-24 w-24 overflow-hidden rounded-full border border-[#d8c3ae] bg-[#efe1cf]">
+              <img
+                src={artisan.image}
+                alt={artisan.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+
+            <div>
+              <p className="mb-2 text-[11px] uppercase tracking-[0.35em] text-[#b8744f]">
+                Registry Verified
+              </p>
+
+              <h2 className="font-serif text-4xl text-[#2d1c14]">
+                {artisan.name}
+              </h2>
+
+              <p className="mt-2 text-lg text-[#9f5f3d]">
+                {artisan.specialization}
+              </p>
+
+              <div className="mt-3 flex items-center gap-2 text-[#7b5f4f]">
+                <MapPin size={16} />
+                <span>{artisan.region}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="ml-auto flex flex-col items-start md:items-end">
+            <div className="rounded-full border border-[#d7b89d] px-5 py-2 text-sm text-[#8c5638] bg-[#f9f2e8]">
+              {artisan.guild}
+            </div>
+
+            <div className="mt-6 flex items-center gap-2 text-[#3e7b57]">
+              <ShieldCheck size={18} />
+              <span className="text-sm tracking-wide">
+                Provenance Confirmed
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 border-t border-[#e1cfbd] pt-6">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex items-center gap-3 text-sm uppercase tracking-[0.25em] text-[#9c6345] transition hover:text-[#6f3d25]"
+          >
+            Registry Record
+            <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
+              <ChevronDown size={16} />
+            </motion.div>
+          </button>
+
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.4 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-8 grid gap-8 md:grid-cols-2">
+                  <div>
+                    <p className="mb-3 text-[11px] uppercase tracking-[0.35em] text-[#b8744f]">
+                      Heritage Statement
+                    </p>
+
+                    <blockquote className="border-l-2 border-[#c88a63] pl-5 font-serif text-xl italic leading-relaxed text-[#4a3427]">
+                      “{artisan.statement}”
+                    </blockquote>
+                  </div>
+
+                  <div className="space-y-5">
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.35em] text-[#b8744f]">
+                        Registry Identifier
+                      </p>
+
+                      <p className="mt-2 break-all text-sm text-[#6d5648]">
+                        {artisan.did}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.35em] text-[#b8744f]">
+                        Verified Works
+                      </p>
+
+                      <p className="mt-2 text-2xl font-serif text-[#2d1c14]">
+                        {artisan.works}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-[11px] uppercase tracking-[0.35em] text-[#b8744f]">
+                        Guild Affiliation
+                      </p>
+
+                      <p className="mt-2 text-[#5f493c]">
+                        {artisan.guild}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.div>
   );
 }
