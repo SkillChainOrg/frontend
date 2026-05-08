@@ -3,8 +3,8 @@ import LandingPage from "./pages/LandingPage";
 import { VerificationPage } from "./pages/VerificationPage";
 import { ArtisanDashboard } from "./pages/ArtisanDashboard";
 import { ArtworkDetailPage } from "./pages/ArtworkDetailPage";
-import  ArtisanSearchPage from "./pages/ArtisanSearchPage";   // NEW
-import { ArtisanDetailPage } from "./pages/ArtisanDetailPage";   // NEW
+import { ArtisanSearchPage } from "./pages/ArtisanSearchPage";
+import { ArtisanDetailPage } from "./pages/ArtisanDetailPage";
 
 function App() {
   return (
