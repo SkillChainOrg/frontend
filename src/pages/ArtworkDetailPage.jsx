@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShieldCheck, Fingerprint, ScrollText, ExternalLink } from "lucide-react";
+import {
+  ShieldCheck,
+  Fingerprint,
+  ScrollText,
+  ExternalLink,
+} from "lucide-react";
 import * as api from "../api/api";
 import { useToast } from "../context/ToastContext";
 
@@ -28,6 +33,7 @@ export const ArtworkDetailPage = () => {
 
   useEffect(() => {
     let mounted = true;
+
     const run = async () => {
       try {
         setLoading(true);
@@ -42,7 +48,9 @@ export const ArtworkDetailPage = () => {
         if (mounted) setLoading(false);
       }
     };
+
     if (Number.isFinite(id)) run();
+
     return () => {
       mounted = false;
     };
@@ -51,9 +59,13 @@ export const ArtworkDetailPage = () => {
   const handleAcquire = async () => {
     try {
       if (!collector.name.trim() || !collector.email.trim()) {
-        addToast("Collector name and email are required to record acquisition", "error");
+        addToast(
+          "Collector name and email are required to record acquisition",
+          "error"
+        );
         return;
       }
+
       setAcquiring(true);
       const ok = await loadRazorpay();
       if (!ok) {
@@ -88,6 +100,7 @@ export const ArtworkDetailPage = () => {
             razorpay_signature: resp.razorpay_signature,
             artwork_id: id,
           });
+
           if (verify?.data?.success) {
             addToast("Acquisition Recorded • Provenance Updated", "success");
             const refreshed = await api.getArtwork(id);
@@ -111,7 +124,9 @@ export const ArtworkDetailPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] px-6 pt-24">
-        <div className="max-w-5xl mx-auto text-[#6D5646]">Preparing provenance object…</div>
+        <div className="max-w-5xl mx-auto text-[#6D5646]">
+          Preparing provenance object…
+        </div>
       </div>
     );
   }
@@ -120,7 +135,9 @@ export const ArtworkDetailPage = () => {
     return (
       <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] px-6 pt-24">
         <div className="max-w-5xl mx-auto">
-          <p className="text-[#6D5646]">This artwork record could not be resolved.</p>
+          <p className="text-[#6D5646]">
+            This artwork record could not be resolved.
+          </p>
           <Link to="/verify" className="text-[#B56A3E] hover:underline">
             Return to verification
           </Link>
@@ -139,14 +156,21 @@ export const ArtworkDetailPage = () => {
               Artwork preview
             </div>
             <div className="p-7">
-              <h1 className="text-4xl font-serif mb-2">{artwork.title || "Untitled work"}</h1>
-              <p className="text-[#6D5646] mb-4">{artwork.description || "A recorded work in the SkillChain archive."}</p>
+              <h1 className="text-4xl font-serif mb-2">
+                {artwork.title || "Untitled work"}
+              </h1>
+              <p className="text-[#6D5646] mb-4">
+                {artwork.description ||
+                  "A recorded work in the SkillChain archive."}
+              </p>
               <div className="grid sm:grid-cols-2 gap-3 text-sm">
                 <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
                   <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
                     <Fingerprint size={14} /> Artist DID
                   </div>
-                  <div className="mt-2 font-mono break-all text-xs">{artwork.artisan_did}</div>
+                  <div className="mt-2 font-mono break-all text-xs">
+                    {artwork.artisan_did}
+                  </div>
                 </div>
                 <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
                   <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
@@ -158,7 +182,9 @@ export const ArtworkDetailPage = () => {
                   <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
                     <ScrollText size={14} /> IPFS CID
                   </div>
-                  <div className="mt-2 font-mono break-all text-xs">{artwork.ipfs_cid || "—"}</div>
+                  <div className="mt-2 font-mono break-all text-xs">
+                    {artwork.ipfs_cid || "—"}
+                  </div>
                 </div>
                 <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
                   <div className="flex items-center gap-2 text-[#8B694D] uppercase tracking-[0.18em] text-xs">
@@ -185,11 +211,13 @@ export const ArtworkDetailPage = () => {
             <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-7">
               <h2 className="text-2xl font-serif mb-2">Acquire Artwork</h2>
               <p className="text-sm text-[#6D5646] mb-4">
-                Settlement confirmation becomes an archival provenance event. Ownership is recorded only after server verification.
+                Settlement confirmation becomes an archival provenance event.
+                Ownership is recorded only after server verification.
               </p>
               {ownership?.owner_name ? (
                 <div className="p-3 bg-[#fffaf1] border border-[#d8c6aa] text-sm text-[#6D5646] mb-4">
-                  Current ownership snapshot: <span className="text-[#2B1D16]">{ownership.owner_name}</span>
+                  Current ownership snapshot:{" "}
+                  <span className="text-[#2B1D16]">{ownership.owner_name}</span>
                 </div>
               ) : null}
               <div className="grid gap-3">
@@ -197,13 +225,17 @@ export const ArtworkDetailPage = () => {
                   className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
                   placeholder="Collector name"
                   value={collector.name}
-                  onChange={(e) => setCollector((c) => ({ ...c, name: e.target.value }))}
+                  onChange={(e) =>
+                    setCollector((c) => ({ ...c, name: e.target.value }))
+                  }
                 />
                 <input
                   className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
                   placeholder="Collector email"
                   value={collector.email}
-                  onChange={(e) => setCollector((c) => ({ ...c, email: e.target.value }))}
+                  onChange={(e) =>
+                    setCollector((c) => ({ ...c, email: e.target.value }))
+                  }
                 />
                 <button
                   onClick={handleAcquire}
@@ -225,14 +257,21 @@ export const ArtworkDetailPage = () => {
                   <div className="text-sm text-[#6D5646]">No events yet.</div>
                 ) : (
                   provenance.map((ev) => (
-                    <div key={ev.id} className="p-3 bg-[#fffaf1] border border-[#d8c6aa]">
+                    <div
+                      key={ev.id}
+                      className="p-3 bg-[#fffaf1] border border-[#d8c6aa]"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D]">
                           {ev.provenance_event_type || ev.event_type}
                         </div>
-                        <div className="text-xs text-[#6D5646]">{ev.created_at}</div>
+                        <div className="text-xs text-[#6D5646]">
+                          {ev.created_at}
+                        </div>
                       </div>
-                      <div className="mt-2 text-sm text-[#2B1D16] break-words">{ev.event_type}</div>
+                      <div className="mt-2 text-sm text-[#2B1D16] break-words">
+                        {ev.event_type}
+                      </div>
                     </div>
                   ))
                 )}
@@ -244,4 +283,3 @@ export const ArtworkDetailPage = () => {
     </div>
   );
 };
-
