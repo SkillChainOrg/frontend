@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { ProvenanceTimeline } from "../components/provenance/ProvenanceTimeline";
+import { X402ChallengeModal } from "../components/x402/X402ChallengeModal";
 import {
   ShieldCheck,
   Fingerprint,
@@ -39,118 +41,85 @@ export const ArtworkDetailPage = () => {
     email: "",
   });
 
-  const [acquiring, setAcquiring] = useState(false);
+
 
   const [showArtisan, setShowArtisan] = useState(false);
+  const [showAcquireModal, setShowAcquireModal] = useState(false);
 
-  const id = useMemo(() => Number(artworkId), [artworkId]);
+  const id = artworkId;
 
   useEffect(() => {
-    let mounted = true;
+  let mounted = true;
 
-    const run = async () => {
-      try {
-        setLoading(true);
-
-        const { data } = await api.getArtwork(id);
-
-        if (!mounted) return;
-
-        setArtwork(data.artwork);
-        setProvenance(data.provenance_events || []);
-        setOwnership(data.ownership || null);
-      } catch (e) {
-        addToast("Could not load artwork record", "error");
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-
-    if (Number.isFinite(id)) run();
-
-    return () => {
-      mounted = false;
-    };
-  }, [id, addToast]);
-
-  const handleAcquire = async () => {
+  const run = async () => {
     try {
-      if (!collector.name.trim() || !collector.email.trim()) {
-        addToast(
-          "Collector name and email are required",
-          "error"
-        );
-        return;
-      }
+      setLoading(true);
 
-      setAcquiring(true);
+      const { data } = await api.getArtwork(id);
 
-      const ok = await loadRazorpay();
+      console.log("BACKEND RESPONSE", data);
+      console.log("ARTWORK OBJECT", data.artwork);
 
-      if (!ok) {
-        addToast("Could not initialize acquisition flow", "error");
-        return;
-      }
+      if (!mounted) return;
 
-      const { data } = await api.createPaymentOrder({
-        artwork_id: id,
-        collector_name: collector.name,
-        collector_email: collector.email,
+      setArtwork(data.artwork);
+
+      setProvenance(
+        data.provenance_history || []
+      );
+
+      setOwnership({
+        owner_name: data.current_owner,
       });
 
-      const options = {
-        key: data.key_id,
-        amount: data.amount,
-        currency: data.currency,
-        name: "SkillChain",
-        description: "Acquire authenticated cultural work",
-        order_id: data.order_id,
-
-        method: {
-          upi: true,
-        },
-
-        prefill: {
-          name: collector.name,
-          email: collector.email,
-        },
-
-        theme: {
-          color: "#B56A3E",
-        },
-
-        handler: async (resp) => {
-          const verify = await api.verifyPayment({
-            razorpay_order_id: resp.razorpay_order_id,
-            razorpay_payment_id: resp.razorpay_payment_id,
-            razorpay_signature: resp.razorpay_signature,
-            artwork_id: id,
-          });
-
-          if (verify?.data?.success) {
-            addToast(
-              "Acquisition Recorded • Provenance Updated",
-              "success"
-            );
-
-            const refreshed = await api.getArtwork(id);
-
-            setProvenance(refreshed.data.provenance_events || []);
-            setOwnership(refreshed.data.ownership || null);
-          }
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-
-      rzp.open();
     } catch (e) {
-      addToast("Acquisition flow failed", "error");
+
+      console.error(
+        "ARTWORK LOAD ERROR",
+        e
+      );
+
+      addToast(
+        "Could not load artwork record",
+        "error"
+      );
+
     } finally {
-      setAcquiring(false);
+
+      if (mounted) setLoading(false);
+
     }
   };
 
+  if (id) run();
+
+  return () => {
+    mounted = false;
+  };
+
+}, [id, addToast]);
+
+  const handleOwnershipTransferred = async () => {
+  try {
+    const refreshed = await api.getArtwork(id);
+
+    setArtwork(refreshed.data.artwork);
+    setProvenance(
+      refreshed.data.provenance_history || []
+      );
+
+    setOwnership({
+      owner_name: refreshed.data.current_owner,
+      });
+
+    addToast(
+      "Ownership transferred • Provenance updated",
+      "success"
+    );
+  } catch (e) {
+    addToast("Could not refresh provenance state", "error");
+  }
+};
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] flex items-center justify-center">
@@ -399,7 +368,7 @@ export const ArtworkDetailPage = () => {
             <div className="bg-[#F7F0E1] border border-[#DCCAB5] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
 
               <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-5">
-                Acquisition Registry
+                Ownership Acquisition
               </p>
 
               <h2 className="font-serif text-4xl mb-4">
@@ -407,8 +376,29 @@ export const ArtworkDetailPage = () => {
               </h2>
 
               <p className="text-[#6E5A4B] leading-relaxed mb-8">
-                Settlement confirmation becomes a permanent provenance event.
+                Ownership transfer is executed through a native HTTP 402
+                payment challenge and permanently recorded as a provenance event.
               </p>
+
+              {/* Ownership Status */}
+
+              <div className="mb-8 bg-[#FFF9F0] border border-[#DDCCB6] p-5">
+
+                <div className="uppercase tracking-[0.18em] text-[10px] text-[#9A7156] mb-3">
+                  Current Ownership
+                </div>
+
+                <div className="text-lg text-[#2B1D16]">
+                  {ownership?.owner_name || "Original Collector"}
+                </div>
+
+                <div className="mt-2 text-sm text-[#7A6555]">
+                  Provenance-linked ownership state
+                </div>
+
+              </div>
+
+              {/* Collector Inputs */}
 
               <div className="space-y-4">
 
@@ -437,63 +427,54 @@ export const ArtworkDetailPage = () => {
                 />
 
                 <button
-                  onClick={handleAcquire}
-                  disabled={acquiring}
+                  onClick={() => setShowAcquireModal(true)}
                   className="w-full bg-[#B56A3E] hover:bg-[#9f5b34] text-white py-4 transition duration-300"
                 >
-                  {acquiring
-                    ? "Preparing acquisition…"
-                    : "Acquire Artwork"}
+                  Begin x402 Acquisition
                 </button>
 
               </div>
+
+              {/* Protocol explanation */}
+
+              <div className="mt-8 border-t border-[#DDCCB6] pt-6">
+
+                <div className="uppercase tracking-[0.18em] text-[10px] text-[#9A7156] mb-3">
+                  Settlement Protocol
+                </div>
+
+                <p className="text-sm leading-relaxed text-[#6E5A4B]">
+                  SkillChain uses payment-gated ownership transfer infrastructure
+                  where acquisition events become permanent provenance records
+                  anchored on Algorand.
+                </p>
+
+              </div>
+
             </div>
 
             {/* PROVENANCE */}
 
             <div className="bg-[#F7F0E1] border border-[#DCCAB5] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
 
-              <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-5">
+              <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-6">
                 Provenance Timeline
               </p>
 
-              <div className="space-y-4">
-
-                {provenance.length === 0 ? (
-                  <div className="text-[#6E5A4B]">
-                    No provenance events recorded.
-                  </div>
-                ) : (
-                  provenance.map((ev) => (
-                    <div
-                      key={ev.id}
-                      className="border border-[#DCCAB5] bg-[#FFF9F0] p-4"
-                    >
-
-                      <div className="flex items-center justify-between">
-
-                        <div className="uppercase tracking-[0.18em] text-[10px] text-[#9A7156]">
-                          {ev.provenance_event_type || ev.event_type}
-                        </div>
-
-                        <div className="text-xs text-[#7A6555]">
-                          {ev.created_at}
-                        </div>
-
-                      </div>
-
-                      <div className="mt-3 text-sm">
-                        {ev.event_type}
-                      </div>
-
-                    </div>
-                  ))
-                )}
-
-              </div>
+              <ProvenanceTimeline
+                events={provenance}
+                artisan={{
+                  name: artwork?.artisan_name || "Verified Artisan",
+                  did: artwork?.artisan_did,
+                }}
+                artwork={{
+                  title: artwork?.title,
+                  tx_id: artwork?.tx_id,
+                  created_at: artwork?.created_at,
+                }}
+              />
 
             </div>
-
           </div>
         </div>
       </section>

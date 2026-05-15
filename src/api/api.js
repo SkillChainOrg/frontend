@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000',
   timeout: 30000,
 });
 
@@ -59,7 +59,7 @@ export const verifyPayment = ({ razorpay_order_id, razorpay_payment_id, razorpay
   });
 
 // Artwork object (provenance-first)
-export const getArtwork = (artworkId) => api.get(`/api/artworks/${artworkId}`);
+export const getArtwork = (artworkId) => api.get(`/artwork/${artworkId}`);
 
 // Admin
 export const getPendingArtisans = () => api.get('/admin/artisans/pending');
