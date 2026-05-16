@@ -478,6 +478,14 @@ export const ArtworkDetailPage = () => {
           </div>
         </div>
       </section>
-    </div>
+    
+          {showAcquireModal && (
+        <X402ChallengeModal
+          artwork={artwork}
+          onClose={() => setShowAcquireModal(false)}
+          onOwnershipTransferred={handleOwnershipTransferred}
+        />
+      )}
+    </div>  
   );
 };
