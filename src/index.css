@@ -4,10 +4,7 @@
 
 @layer base {
   html,
-  body {
-    min-height: 100%;
-  }
-
+  body,
   #root {
     min-height: 100%;
   }
@@ -41,31 +38,64 @@
 
 @layer components {
   .heritage-card {
-    @apply bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-sandstone/50 dark:border-white/10 shadow-lg shadow-terracotta/5 dark:shadow-black/20 p-6 transition-all duration-300;
+    @apply rounded-xl border p-6 shadow-lg transition-all duration-300;
+    background-color: rgba(255, 255, 255, 0.82);
+    border-color: rgba(216, 199, 171, 0.5);
   }
-  
+
   .heritage-card:hover {
-    @apply shadow-xl shadow-terracotta/10 dark:shadow-gold/10 border-saffron/30;
+    @apply shadow-xl;
   }
 
   .btn-primary {
-    @apply px-6 py-3 bg-terracotta hover:bg-clay text-white font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2;
+    @apply px-6 py-3 text-white font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 flex items-center gap-2;
+    background-color: #B56A3E;
+  }
+
+  .btn-primary:hover {
+    background-color: #9F5730;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-transparent border-2 border-terracotta text-terracotta hover:bg-terracotta hover:text-white font-medium rounded-lg transition-all duration-200 active:scale-95 flex items-center gap-2;
+    @apply px-6 py-3 font-medium rounded-lg transition-all duration-200 active:scale-95 flex items-center gap-2 border-2;
+    border-color: #B56A3E;
+    color: #B56A3E;
+    background: transparent;
+  }
+
+  .btn-secondary:hover {
+    background-color: #B56A3E;
+    color: white;
   }
 
   .motif-border {
     @apply relative;
   }
-  
+
   .motif-border::after {
-    content: '';
-    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-saffron to-transparent rounded-full;
+    content: "";
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1 rounded-full;
+    background: linear-gradient(
+      to right,
+      transparent,
+      #C88B3A,
+      transparent
+    );
   }
 
   .text-field {
-    @apply w-full px-4 py-3 rounded-lg bg-parchment/50 dark:bg-white/5 border border-sandstone dark:border-white/10 focus:border-terracotta focus:ring-2 focus:ring-terracotta/20 outline-none transition-all placeholder:text-warm-gray;
+    @apply w-full px-4 py-3 rounded-lg border outline-none transition-all;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: #d8c7ab;
+    color: #2B1D16;
+  }
+
+  .text-field::placeholder {
+    color: #8A7766;
+  }
+
+  .text-field:focus {
+    border-color: #B56A3E;
+    box-shadow: 0 0 0 2px rgba(181, 106, 62, 0.2);
   }
 }

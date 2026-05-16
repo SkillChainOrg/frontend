@@ -6,9 +6,8 @@ import { useTranslation } from "react-i18next";
 import heroImage from "../assets/hero.jpg";
 
 export default function LandingPage() {
-  const [showNavbar, setShowNavbar] = useState(false);
   const [entered, setEntered] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const missionPoints = [
     t("landing_mission_point_1"),
@@ -87,13 +86,13 @@ export default function LandingPage() {
             </div>
 
             <h1
-              className={`font-serif ${
+              className={`font-serif text-6xl md:text-8xl leading-none mb-8 ${
                 i18n.language === "hi"
                   ? "tracking-normal"
-                  : "tracking-tight"
+                  : "tracking-[-0.04em]"
               }`}
             >
-              {t("brand_name")}
+              SkillChain
             </h1>
 
             <div className="w-24 h-[1px] bg-[#B56A3E] mb-8" />
