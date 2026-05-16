@@ -31,7 +31,15 @@ export const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center gap-2 group">
             <Fingerprint className="text-terracotta group-hover:text-saffron transition-colors" size={28} />
-            <span className="font-serif text-xl font-bold text-deep-ink dark:text-ivory">SkillChain</span>
+            <span
+              className={`font-serif text-xl font-bold text-deep-ink dark:text-ivory ${
+                i18n.language === "hi"
+                  ? "tracking-normal"
+                  : "tracking-wide"
+              }`}
+            >
+              {t("brand_name")}
+            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">

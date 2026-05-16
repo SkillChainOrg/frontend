@@ -30,12 +30,17 @@ dark:text-[#F5ECDE]
 "
     >
       <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+
         {/* LOGO */}
         <Link
           to="/"
-          className="font-serif text-2xl tracking-wide"
+          className={`font-serif text-2xl ${
+            i18n.language === "hi"
+              ? "tracking-normal"
+              : "tracking-wide"
+          }`}
         >
-          SkillChain
+          {t("brand_name")}
         </Link>
 
         {/* LINKS */}
@@ -57,15 +62,25 @@ dark:text-[#F5ECDE]
             <button
               type="button"
               onClick={() => i18n.changeLanguage("en")}
-              className={`transition ${i18n.language === "en" ? "text-[#B56A3E]" : "hover:text-[#B56A3E]"}`}
+              className={`transition ${
+                i18n.language === "en"
+                  ? "text-[#B56A3E]"
+                  : "hover:text-[#B56A3E]"
+              }`}
             >
               {t("lang_en")}
             </button>
+
             <span className="text-[#B56A3E]/70">|</span>
+
             <button
               type="button"
               onClick={() => i18n.changeLanguage("hi")}
-              className={`font-serif normal-case tracking-normal transition ${i18n.language === "hi" ? "text-[#B56A3E]" : "hover:text-[#B56A3E]"}`}
+              className={`font-serif normal-case tracking-normal transition ${
+                i18n.language === "hi"
+                  ? "text-[#B56A3E]"
+                  : "hover:text-[#B56A3E]"
+              }`}
             >
               {t("lang_hi")}
             </button>
