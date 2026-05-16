@@ -17,17 +17,30 @@ export const AdminPanel = () => {
   };
 
   const loadPending = async () => {
-    if (!adminKey) return addToast('Please enter admin key', 'error');
-    setLoading(true);
-    try {
-      const { data } = await api.getPendingArtisans();
-      setArtisans(data);
-    } catch (err) {
-      addToast('Failed to load pending artisans', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (!adminKey) {
+        return addToast('Please enter admin key', 'error');
+      }
+
+      setLoading(true);
+
+      try {
+        const { data } = await api.getPendingArtisans();
+
+        console.log("Pending artisans response:", data);
+
+        setArtisans(Array.isArray(data) ? data : []);
+
+      } catch (err) {
+        console.error(err);
+
+        addToast(
+          err?.response?.data?.error || 'Failed to load pending artisans',
+          'error'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const handleApprove = async (id) => {
     try {

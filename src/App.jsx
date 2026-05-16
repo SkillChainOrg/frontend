@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage";
+import { AdminPanel } from './pages/AdminPanel';
 
 import { VerificationPage } from "./pages/VerificationPage";
 import { ArtisanDashboard } from "./pages/ArtisanDashboard";
@@ -23,7 +24,7 @@ function App() {
         {/* ─────────────────────────────────────
             Core Product Routes
         ───────────────────────────────────── */}
-
+        <Route path="/admin" element={<AdminPanel />} />
         <Route path="/" element={<LandingPage />} />
 
         {/* Verification / authenticity */}
