@@ -151,31 +151,79 @@ export const X402ChallengeModal = ({
   // Auto-advance from processing after simulated delay
   // In production: replace with actual api.acquireArtwork call
   const handleAuthorize = async () => {
-    if (!walletAddress.trim() && !collectorEmail) return;
-    setStep(2); // processing
+  try {
+    setStep(2);
 
-    try {
-      // Replace this block with your real x402 acquire endpoint call:
-      // const { data } = await api.acquireArtwork({
-      //   artwork_id: artwork.id,
-      //   collector_name: collectorName,
-      //   collector_email: collectorEmail,
-      //   wallet_address: walletAddress,
-      // });
-      // setTxResult(data);
+    // REAL acquisition request
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/x402/acquire`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          artwork_id: artwork?.id,
+          collector_name: collectorName || "Anonymous",
+          collector_email: collectorEmail || "",
+          wallet_address: walletAddress || "",
+        }),
+      }
+    );
 
-      // Simulated delay — remove when wiring real API
-      await new Promise((r) => setTimeout(r, 2200));
-      setTxResult({
-        tx_id: "SIMULATED_TX_" + Math.random().toString(36).slice(2, 10).toUpperCase(),
-        new_owner: walletAddress || collectorEmail,
-        provenance_event: "ownership_transfer",
-      });
-      setStep(3);
-    } catch {
-      setStep(1); // fall back to authorize on error
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Acquisition failed");
     }
-  };
+
+    /*
+      Expected backend response shape:
+
+      {
+        success: true,
+        tx_id: "...",
+        provenance_event: "...",
+        explorer_url: "...",
+        new_owner: "...",
+        network: "Algorand Testnet"
+      }
+    */
+
+    setTxResult({
+      tx_id: data.tx_id,
+      provenance_event:
+        data.provenance_event || "ownership_transfer",
+      explorer_url:
+        data.explorer_url ||
+        `https://testnet.explorer.perawallet.app/tx/${data.tx_id}`,
+      new_owner:
+        data.new_owner ||
+        walletAddress ||
+        collectorEmail ||
+        "Anonymous",
+      network: data.network || "Algorand Testnet",
+    });
+
+    // refresh artwork provenance
+    if (onOwnershipTransferred) {
+      await onOwnershipTransferred();
+    }
+
+    // move to success state
+    setStep(3);
+
+  } catch (err) {
+    console.error("x402 acquisition failed", err);
+
+    setStep(1);
+
+    alert(
+      err?.message ||
+      "Could not complete ownership transfer."
+    );
+  }
+};
 
   const handleSuccess = () => {
     onSuccess?.(txResult);
@@ -321,35 +369,11 @@ export const X402ChallengeModal = ({
 
                   <div className="flex gap-3">
                     <button
-                      onClick={async () => {
-                        try {
-                          setStep(2);
-
-                          // simulate network/payment processing
-                          await new Promise((resolve) =>
-                            setTimeout(resolve, 2200)
-                          );
-
-                          setStep(4);
-
-                          // simulate provenance update
-                          if (onOwnershipTransferred) {
-                            await onOwnershipTransferred();
-                          }
-
-                          // auto close after success
-                          setTimeout(() => {
-                            onClose();
-                          }, 2500);
-
-                        } catch (e) {
-                          console.error(e);
-                        }
-                      }}
+                      onClick={handleAuthorize}
                       className="flex-1 bg-[#B56A3E] hover:bg-[#9f5b34] text-white py-5 transition duration-300"
                     >
                       Authorize Payment
-                  </button>
+                    </button>
                   </div>
                 </motion.div>
               )}
@@ -458,7 +482,7 @@ export const X402ChallengeModal = ({
                   <div className="flex gap-3">
                     {txResult?.tx_id && (
                       <a
-                        href={`https://testnet.explorer.perawallet.app/tx/${txResult.tx_id}`}
+                        href={txResult?.explorer_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 px-4 py-3.5 border border-[#d8c6aa] text-[#B56A3E] hover:bg-[#ece4d4] transition text-sm"
