@@ -44,14 +44,23 @@ export const AdminPanel = () => {
 
   const handleApprove = async (id) => {
     try {
-      await api.approveArtisan(id);
-      setArtisans(prev => prev.filter(a => a.id !== id));
+      const { data } = await api.approveArtisan(id);
+        prev.map(a =>
+          a.id === id
+            ? {
+                ...a,
+                status: "approved",
+                did: data.did,
+                algorand_wallet: data.algorand_wallet,
+              }
+            : a
+        )
       addToast('Artisan approved successfully', 'success');
     } catch (err) {
       addToast('Approval failed', 'error');
     }
   };
-
+  const { data } = await api.approveArtisan(id);
   const handleReject = async (id) => {
     try {
       await api.rejectArtisan(id);
@@ -112,7 +121,16 @@ export const AdminPanel = () => {
                     <td className="px-6 py-4 font-medium">{artisan.name}</td>
                     <td className="px-6 py-4 text-warm-gray">{artisan.craft_type}</td>
                     <td className="px-6 py-4 text-warm-gray">{artisan.location}</td>
-                    <td className="px-6 py-4"><StatusBadge status="pending" text="Pending" /></td>
+                    <td className="px-6 py-4 text-xs font-mono break-all">
+                      {artisan.did || "—"}
+                    </td>
+                    <th className="px-6 py-4 font-medium">DID</th>
+                    <td className="px-6 py-4">
+                      <StatusBadge
+                        status={artisan.status || "pending"}
+                        text={artisan.status || "pending"}
+                      />
+                    </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end gap-2">
                         <button 

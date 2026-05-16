@@ -25,12 +25,32 @@ import { useToast } from "../context/ToastContext";
 import * as api from "../api/api";
 
 export const ArtisanDashboard = () => {
+  const [lookupDid, setLookupDid] = useState("");
+  const [resolvedArtisan, setResolvedArtisan] = useState(null);
   const [showDidModal, setShowDidModal] = useState(false);
   const [didDocument, setDidDocument] = useState(null);
   const [loadingDid, setLoadingDid] = useState(false);
   const { t } = useTranslation();
   const [artisan, setArtisan] = useState(null);
-  const [registered, setRegistered] = useState(false);
+  const refreshArtisanStatus = async () => {
+    try {
+      if (!artisan?.did) return;
+
+      const { data } = await api.getArtisan(artisan.did);
+
+      setArtisan((prev) => ({
+        ...prev,
+        ...data,
+      }));
+
+      addToast("Identity updated from registry", "success");
+
+    } catch (err) {
+      console.error(err);
+      addToast("Identity still pending approval", "error");
+    }
+  };
+    const [registered, setRegistered] = useState(false);
   const [form, setForm] = useState({
     name: "",
     craft_type: "",
@@ -105,6 +125,39 @@ export const ArtisanDashboard = () => {
       addToast("Registration failed", "error");
     } finally {
       setLoading(false);
+    }
+  };
+  const refreshArtisanStatus = async () => {
+    try {
+      const { data } = await api.getArtisan(artisan.did);
+
+      setArtisan((prev) => ({
+        ...prev,
+        ...data,
+      }));
+
+      addToast("Identity updated from registry", "success");
+
+    } catch (err) {
+      console.error(err);
+      addToast("Identity still pending approval", "error");
+    }
+  };
+  const handleLookup = async () => {
+    try {
+      const { data } = await api.getArtisan(lookupDid);
+
+      setResolvedArtisan(data);
+
+      addToast("Identity resolved", "success");
+
+    } catch (err) {
+      console.error(err);
+
+      addToast(
+        err?.response?.data?.error || "Resolution failed",
+        "error"
+      );
     }
   };
   const handleResolveDid = async () => {
@@ -481,6 +534,12 @@ export const ArtisanDashboard = () => {
                 </span>
                 <span className="font-medium">Awaiting institutional verification</span>
               </div>
+              <button
+                onClick={refreshArtisanStatus}
+                className="mt-6 px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"
+              >
+                Check Approval Status
+              </button>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
@@ -537,18 +596,49 @@ export const ArtisanDashboard = () => {
                 trust identity, and the ability to anchor artworks as verified works of origin.
               </p>
             </div>
+            <div className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] p-8 mt-10">
+              <h3 className="text-2xl font-serif mb-4">
+                Resolve Artisan Identity
+              </h3>
 
-            <div className="mt-8 p-5 border border-[#d5c4a7] dark:border-[#2e241d] bg-[#f5ebdd] dark:bg-[#1A1410]">
-              <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-2">
-                Approval prepares
+              <div className="flex gap-3">
+                <input
+                  value={lookupDid}
+                  onChange={(e) => setLookupDid(e.target.value)}
+                  placeholder="Enter DID"
+                  className="flex-1 px-4 py-3 border border-[#cfb99d]"
+                />
+
+                <button
+                  onClick={handleLookup}
+                  className="px-5 py-3 bg-[#B56A3E] text-white"
+                >
+                  Resolve
+                </button>
               </div>
-              <div className="space-y-2 text-[#5C4636] dark:text-[#CBB9A6]">
-                <div>DID identity issuance</div>
-                <div>Creator-authored provenance records</div>
-                <div>Blockchain-linked authenticity</div>
-              </div>
+
+              {resolvedArtisan && (
+                <div className="mt-6 p-5 border border-[#d8c7ab]">
+                  <div><strong>Name:</strong> {resolvedArtisan.name}</div>
+                  <div><strong>Craft:</strong> {resolvedArtisan.craft_type}</div>
+                  <div><strong>Cluster:</strong> {resolvedArtisan.cluster}</div>
+                  <div><strong>Location:</strong> {resolvedArtisan.location}</div>
+                  <div><strong>Status:</strong> {resolvedArtisan.status}</div>
+                </div>
+              )}
             </div>
-          </div>
+
+                        <div className="mt-8 p-5 border border-[#d5c4a7] dark:border-[#2e241d] bg-[#f5ebdd] dark:bg-[#1A1410]">
+                          <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-2">
+                            Approval prepares
+                          </div>
+                          <div className="space-y-2 text-[#5C4636] dark:text-[#CBB9A6]">
+                            <div>DID identity issuance</div>
+                            <div>Creator-authored provenance records</div>
+                            <div>Blockchain-linked authenticity</div>
+                          </div>
+                        </div>
+                      </div>
         
 
         {artisan.did ? (
