@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import heroImage from "../assets/hero.jpg";
 
 export default function LandingPage() {
   const [showNavbar, setShowNavbar] = useState(false);
   const [entered, setEntered] = useState(false);
+  const { t } = useTranslation();
+
+  const missionPoints = [
+    t("landing_mission_point_1"),
+    t("landing_mission_point_2"),
+    t("landing_mission_point_3"),
+    t("landing_mission_point_4"),
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,7 +52,7 @@ export default function LandingPage() {
               onClick={() => setEntered(true)}
               className="uppercase tracking-[0.35em] text-xs text-[#D8B38A] border border-[#3E2D20] px-8 py-4 hover:bg-[#17110d] transition"
             >
-              Click to Enter
+              {t("landing_enter")}
             </motion.button>
           </div>
         </motion.div>
@@ -74,7 +83,7 @@ export default function LandingPage() {
           >
             <div className="flex items-center gap-2 mb-6 text-[#9B5E38] uppercase tracking-[0.3em] text-xs">
               <Shield size={14} />
-              Blockchain Verified Heritage
+              {t("landing_badge")}
             </div>
 
             <h1 className="font-serif text-[5rem] md:text-[7rem] leading-[0.9] tracking-[-0.04em] mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
@@ -84,8 +93,7 @@ export default function LandingPage() {
             <div className="w-24 h-[1px] bg-[#B56A3E] mb-8" />
 
             <p className="text-xl md:text-2xl leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-xl mb-10 font-light">
-              Preserving human craft through verifiable provenance,
-              decentralized identity, and permanent digital heritage.
+              {t("landing_hero_subtitle")}
             </p>
 
             <div className="flex flex-wrap gap-5">
@@ -93,14 +101,14 @@ export default function LandingPage() {
                 to="/verify"
                 className="px-8 py-4 bg-[#B56A3E] text-white rounded-sm tracking-wide hover:bg-[#9f5730] transition duration-300 shadow-lg"
               >
-                Verify Artwork
+                {t("verify_artwork")}
               </Link>
 
               <Link
                 to="/artisan"
                 className="px-8 py-4 border border-[#B56A3E] text-[#B56A3E] rounded-sm tracking-wide hover:bg-[#B56A3E] hover:text-white transition duration-300"
               >
-                Register Artisan
+                {t("register_artisan")}
               </Link>
             </div>
           </motion.div>
@@ -173,7 +181,7 @@ export default function LandingPage() {
           className="absolute bottom-10 left-1/2 -translate-x-1/2 text-[#8A674F] flex flex-col items-center gap-2"
         >
           <span className="text-xs tracking-[0.3em] uppercase">
-            Scroll to Explore
+            {t("landing_scroll_explore")}
           </span>
 
           <ChevronDown size={18} />
@@ -186,28 +194,21 @@ export default function LandingPage() {
           {/* LEFT */}
           <div>
             <div className="uppercase tracking-[0.3em] text-xs text-[#9B5E38] mb-6">
-              Our Mission
+              {t("landing_mission_label")}
             </div>
 
             <h2 className="font-serif text-5xl leading-tight mb-10 text-[#2B1D16] dark:text-[#F5ECDE]">
-              Empowering Artisans.
+              {t("landing_mission_title_line_1")}
               <br />
-              Protecting Heritage.
+              {t("landing_mission_title_line_2")}
             </h2>
 
             <p className="text-lg leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-xl">
-              SkillChain combines decentralized identity and tamper-proof
-              provenance infrastructure to preserve human craftsmanship across
-              generations.
+              {t("landing_mission_body")}
             </p>
 
             <div className="mt-10 space-y-5">
-              {[
-                "DID-backed artisan identity",
-                "Algorand anchored provenance",
-                "IPFS persistent records",
-                "Tamper-proof verification",
-              ].map((item, i) => (
+              {missionPoints.map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="w-2 h-2 rounded-full bg-[#B56A3E]" />
                   <span className="text-[#4E3C31] dark:text-[#E6DACC]">{item}</span>

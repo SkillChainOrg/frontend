@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   ShieldCheck,
   ArrowUpRight,
@@ -41,6 +42,8 @@ const artworks = [
 ];
 
 export default function ArtworksPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen pt-28 bg-[#F0E7D3] text-[#2B1D16] dark:bg-[#0F0B08] dark:text-[#F5ECDE]">
       {/* ================= HERO ================= */}
@@ -57,17 +60,15 @@ export default function ArtworksPage() {
           >
             <div className="flex items-center gap-2 mb-6 uppercase tracking-[0.3em] text-xs text-[#9B5E38]">
               <ShieldCheck size={14} />
-              Provenance Registry
+              {t("artworks_registry_badge")}
             </div>
 
             <h1 className="font-serif text-[4rem] md:text-[6rem] leading-[0.92] tracking-[-0.04em] max-w-5xl mb-10 text-[#2B1D16] dark:text-[#F5ECDE]">
-              Authenticated cultural artifacts with immutable ownership history.
+              {t("artworks_hero_title")}
             </h1>
 
             <p className="text-xl leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-3xl font-light">
-              Browse blockchain-certified artisan works secured through
-              decentralized identity, provenance anchoring, and x402-native
-              acquisition infrastructure.
+              {t("artworks_hero_body")}
             </p>
           </motion.div>
         </div>
@@ -87,7 +88,7 @@ export default function ArtworksPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
 
         <div className="absolute top-8 left-8 bg-[#0f0b08]/80 backdrop-blur-md border border-[#3e2d20] px-5 py-3 text-[#F0E7D3] uppercase tracking-[0.25em] text-[10px]">
-          Featured Registry Artifact
+          {t("artworks_featured_badge")}
         </div>
       </div>
 
@@ -95,7 +96,7 @@ export default function ArtworksPage() {
       <div className="p-12 lg:p-16 flex flex-col justify-between">
         <div>
           <div className="uppercase tracking-[0.3em] text-[11px] text-[#9B5E38] mb-6">
-            Immutable Provenance
+            {t("immutable_provenance")}
           </div>
 
           <h2 className="font-serif text-6xl leading-[0.95] tracking-[-0.04em] mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
@@ -103,9 +104,7 @@ export default function ArtworksPage() {
           </h2>
 
           <p className="text-lg leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] mb-10">
-            This authenticated cultural artifact is anchored through
-            decentralized identity, blockchain provenance,
-            and tamper-resistant archival infrastructure.
+            {t("artworks_featured_body")}
           </p>
 
           <div className="space-y-6">
@@ -131,7 +130,7 @@ export default function ArtworksPage() {
 
             <div>
               <div className="uppercase tracking-[0.25em] text-[10px] text-[#8A674F] mb-2">
-                Acquisition Infrastructure
+                {t("artworks_acquisition_infrastructure")}
               </div>
 
               <div className="text-[#4E3C31] dark:text-[#E6DACC]">
@@ -144,11 +143,11 @@ export default function ArtworksPage() {
         <div className="mt-16 flex items-center justify-between border-t border-[#d8c7ab] dark:border-[#3A2C21] pt-8">
           <div>
             <div className="uppercase tracking-[0.2em] text-[10px] text-[#8A674F] mb-2">
-              Registry Status
+              {t("artworks_registry_status")}
             </div>
 
             <div className="text-[#2B1D16] dark:text-[#F5ECDE] font-serif text-2xl">
-              Verified & Active
+              {t("artworks_verified_active")}
             </div>
           </div>
 
@@ -156,7 +155,7 @@ export default function ArtworksPage() {
             to={`/artworks/${artworks[0].id}`}
             className="px-8 py-4 bg-[#B56A3E] text-white uppercase tracking-[0.2em] text-xs hover:bg-[#9f5730] transition"
           >
-            Explore Provenance
+            {t("explore_provenance")}
           </Link>
         </div>
       </div>
@@ -190,7 +189,7 @@ export default function ArtworksPage() {
                     {/* VERIFIED BADGE */}
                     <div className="absolute top-5 left-5 bg-[#0f0b08]/80 text-[#F0E7D3] px-4 py-2 uppercase tracking-[0.25em] text-[10px] backdrop-blur-md border border-[#3e2d20] flex items-center gap-2">
                         <ShieldCheck size={12} />
-                        Verified Artifact
+                        {t("verified_artifact")}
                     </div>
 
                     {/* x402 BADGE */}
@@ -211,11 +210,11 @@ export default function ArtworksPage() {
 
                         <div className="uppercase tracking-[0.25em] text-[10px] text-[#6b5748] border border-[#d8c7ab] px-3 py-1 bg-[#efe4d3] flex items-center gap-2">
                             <Fingerprint size={11} />
-                            DID Bound
+                            {t("artworks_did_bound")}
                         </div>
 
                         <div className="uppercase tracking-[0.25em] text-[10px] text-white px-3 py-1 bg-[#B56A3E]">
-                            Immutable Provenance
+                            {t("immutable_provenance")}
                         </div>
                         </div>
 
@@ -226,10 +225,7 @@ export default function ArtworksPage() {
 
                         {/* DESCRIPTION */}
                         <p className="text-[#5C4636] dark:text-[#D7C6B4] leading-relaxed text-lg max-w-3xl mb-10">
-                        This authenticated cultural artifact is anchored through
-                        decentralized identity infrastructure and blockchain-based
-                        provenance verification to preserve ownership integrity across
-                        generations.
+                        {t("artworks_description")}
                         </p>
 
                         {/* METADATA GRID */}
@@ -248,11 +244,11 @@ export default function ArtworksPage() {
                         {/* CLASSIFICATION */}
                         <div className="border border-[#d8c7ab] dark:border-[#3A2C21] bg-[#efe4d3] dark:bg-[#211913] p-5">
                             <div className="uppercase tracking-[0.25em] text-[10px] text-[#8A674F] mb-3">
-                            Registry Classification
+                            {t("artworks_registry_classification")}
                             </div>
 
                             <div className="text-[#5C4636] dark:text-[#D7C6B4]">
-                            Cultural Preservation Artifact
+                            {t("artworks_preservation_artifact")}
                             </div>
                         </div>
                         </div>
@@ -263,7 +259,7 @@ export default function ArtworksPage() {
                         {/* PRICE / ACQUISITION */}
                         <div>
                         <div className="uppercase tracking-[0.2em] text-[10px] text-[#8A674F] mb-2">
-                            Acquisition Infrastructure
+                            {t("artworks_acquisition_infrastructure")}
                         </div>
 
                         <div className="font-serif text-2xl text-[#2B1D16] dark:text-[#F5ECDE]">
@@ -275,16 +271,16 @@ export default function ArtworksPage() {
                         <div className="flex items-center gap-6">
                         <div className="hidden md:block text-right">
                             <div className="uppercase tracking-[0.2em] text-[10px] text-[#8A674F] mb-2">
-                            Registry Status
+                            {t("artworks_registry_status")}
                             </div>
 
                             <div className="text-[#2B1D16] dark:text-[#F5ECDE]">
-                            Verified & Active
+                            {t("artworks_verified_active")}
                             </div>
                         </div>
 
                         <div className="flex items-center gap-3 uppercase tracking-[0.25em] text-[10px] text-[#B56A3E] group-hover:translate-x-1 transition">
-                            Explore Provenance
+                            {t("explore_provenance")}
                             <ArrowUpRight size={16} />
                         </div>
                         </div>

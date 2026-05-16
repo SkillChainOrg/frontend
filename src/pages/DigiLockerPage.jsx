@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fingerprint, ArrowRight, CheckCircle, Shield, UserCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useToast } from '../context/ToastContext';
 import * as api from '../api/api';
-
-const steps = [
-  { id: 'start', label: 'Start', icon: Fingerprint },
-  { id: 'consent', label: 'Consent', icon: Shield },
-  { id: 'verify', label: 'Verified', icon: UserCheck },
-];
 
 export const DigiLockerPage = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [identity, setIdentity] = useState(null);
   const { addToast } = useToast();
+  const { t } = useTranslation();
+
+  const steps = [
+    { id: 'start', label: t("onboarding_start"), icon: Fingerprint },
+    { id: 'consent', label: t("onboarding_consent"), icon: Shield },
+    { id: 'verify', label: t("onboarding_verified"), icon: UserCheck },
+  ];
 
   const handleNext = async () => {
     setLoading(true);
@@ -42,8 +44,8 @@ export const DigiLockerPage = () => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-serif font-bold mb-2">DigiLocker Integration</h1>
-        <p className="text-warm-gray">Link your government-verified identity to your SkillChain profile.</p>
+        <h1 className="text-3xl font-serif font-bold mb-2">{t("onboarding_digilocker_title")}</h1>
+        <p className="text-warm-gray">{t("onboarding_digilocker_body")}</p>
       </div>
 
       {/* Stepper */}
@@ -77,15 +79,15 @@ export const DigiLockerPage = () => {
           </div>
           
           <h3 className="text-xl font-serif font-bold mb-3">
-            {currentStep === 0 && "Start Identity Verification"}
-            {currentStep === 1 && "Grant Consent"}
-            {currentStep === 2 && "Identity Linked"}
+            {currentStep === 0 && t("onboarding_start_heading")}
+            {currentStep === 1 && t("onboarding_consent_heading")}
+            {currentStep === 2 && t("onboarding_linked_heading")}
           </h3>
           
           <p className="text-warm-gray max-w-md mx-auto mb-8">
-            {currentStep === 0 && "We will redirect you to DigiLocker to fetch your verified demographic details."}
-            {currentStep === 1 && "Allow SkillChain to access your name, DOB, and address for identity binding."}
-            {currentStep === 2 && "Your DigiLocker identity has been successfully linked to your artisan profile."}
+            {currentStep === 0 && t("onboarding_start_body")}
+            {currentStep === 1 && t("onboarding_consent_body")}
+            {currentStep === 2 && t("onboarding_linked_body")}
           </p>
 
           {currentStep < 2 ? (
@@ -94,7 +96,7 @@ export const DigiLockerPage = () => {
               disabled={loading}
               className="btn-primary mx-auto disabled:opacity-50"
             >
-              {loading ? 'Processing...' : 'Continue'} <ArrowRight size={16} />
+              {loading ? t("onboarding_processing") : t("onboarding_continue")} <ArrowRight size={16} />
             </button>
           ) : (
             <div className="bg-forest/10 text-forest px-4 py-2 rounded-lg inline-flex items-center gap-2">

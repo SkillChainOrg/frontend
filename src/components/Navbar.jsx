@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation();
+
+  const navLinks = [
+    { to: "/verify", label: t("nav_verify") },
+    { to: "/artworks", label: t("nav_artworks") },
+    { to: "/artisan", label: t("nav_artisans") },
+    { to: "/institutions", label: t("nav_institutions") },
+  ];
+
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
@@ -29,34 +39,37 @@ dark:text-[#F5ECDE]
         </Link>
 
         {/* LINKS */}
-        <div className="flex items-center gap-10 text-sm tracking-[0.18em] uppercase">
-          <Link
-            to="/verify"
-            className="hover:text-[#B56A3E] transition"
-          >
-            Verify
-          </Link>
+        <div className="flex items-center gap-6 lg:gap-10 text-sm tracking-[0.18em] uppercase">
+          {navLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="hover:text-[#B56A3E] transition whitespace-nowrap"
+            >
+              {link.label}
+            </Link>
+          ))}
 
-          <Link
-            to="/artworks"
-            className="hover:text-[#B56A3E] transition"
+          <div
+            className="flex items-center gap-2 text-[11px] tracking-[0.22em] text-[#7A6150] dark:text-[#D9CAB8]"
+            aria-label="Language switcher"
           >
-            Artworks
-          </Link>
-
-          <Link
-            to="/artisan"
-            className="hover:text-[#B56A3E] transition"
-          >
-            Artisans
-          </Link>
-
-          <Link
-            to="/institutions"
-            className="hover:text-[#B56A3E] transition"
-          >
-            Institutions
-          </Link>
+            <button
+              type="button"
+              onClick={() => i18n.changeLanguage("en")}
+              className={`transition ${i18n.language === "en" ? "text-[#B56A3E]" : "hover:text-[#B56A3E]"}`}
+            >
+              {t("lang_en")}
+            </button>
+            <span className="text-[#B56A3E]/70">|</span>
+            <button
+              type="button"
+              onClick={() => i18n.changeLanguage("hi")}
+              className={`font-serif normal-case tracking-normal transition ${i18n.language === "hi" ? "text-[#B56A3E]" : "hover:text-[#B56A3E]"}`}
+            >
+              {t("lang_hi")}
+            </button>
+          </div>
         </div>
       </div>
     </motion.nav>

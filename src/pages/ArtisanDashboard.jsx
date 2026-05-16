@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   UserPlus,
   ImagePlus,
@@ -23,53 +24,8 @@ import { StatusBadge } from "../components/common/StatusBadge";
 import { useToast } from "../context/ToastContext";
 import * as api from "../api/api";
 
-const steps = [
-  {
-    title: "Application archived",
-    detail: "Your name, craft, and place of practice are recorded in SkillChain's registry.",
-    icon: ScrollText,
-  },
-  {
-    title: "Institutional review",
-    detail: "An institutional or administrative verifier reviews the artisan record.",
-    icon: Landmark,
-  },
-  {
-    title: "DID identity issued",
-    detail: "An approved artisan receives a decentralized identity and a permanent provenance anchor.",
-    icon: Fingerprint,
-  },
-  {
-    title: "Artwork ownership begins",
-    detail: "Registered works can then be anchored to the verified creator identity.",
-    icon: ShieldCheck,
-  },
-];
-
-const trustPillars = [
-  {
-    title: "Decentralized identity",
-    detail: "Every approved artisan receives a DID-backed public record of authorship.",
-    icon: Fingerprint,
-  },
-  {
-    title: "Provenance ownership",
-    detail: "Future artworks can be linked to the creator who made them, not just the file that represents them.",
-    icon: ScrollText,
-  },
-  {
-    title: "Blockchain-backed trust",
-    detail: "Anchoring on Algorand preserves a tamper-resistant timeline of authenticity.",
-    icon: LockKeyhole,
-  },
-  {
-    title: "Permanent archive",
-    detail: "Metadata persistence on IPFS supports durable cultural memory and verification.",
-    icon: Database,
-  },
-];
-
 export const ArtisanDashboard = () => {
+  const { t } = useTranslation();
   const [artisan, setArtisan] = useState(null);
   const [registered, setRegistered] = useState(false);
   const [form, setForm] = useState({
@@ -86,6 +42,52 @@ export const ArtisanDashboard = () => {
   const [artworkFile, setArtworkFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
+
+  const steps = [
+    {
+      title: t("artisan_step_1_title"),
+      detail: t("artisan_step_1_detail"),
+      icon: ScrollText,
+    },
+    {
+      title: t("artisan_step_2_title"),
+      detail: t("artisan_step_2_detail"),
+      icon: Landmark,
+    },
+    {
+      title: t("artisan_step_3_title"),
+      detail: t("artisan_step_3_detail"),
+      icon: Fingerprint,
+    },
+    {
+      title: t("artisan_step_4_title"),
+      detail: t("artisan_step_4_detail"),
+      icon: ShieldCheck,
+    },
+  ];
+
+  const trustPillars = [
+    {
+      title: t("artisan_pillar_1_title"),
+      detail: t("artisan_pillar_1_detail"),
+      icon: Fingerprint,
+    },
+    {
+      title: t("artisan_pillar_2_title"),
+      detail: t("artisan_pillar_2_detail"),
+      icon: ScrollText,
+    },
+    {
+      title: t("artisan_pillar_3_title"),
+      detail: t("artisan_pillar_3_detail"),
+      icon: LockKeyhole,
+    },
+    {
+      title: t("artisan_pillar_4_title"),
+      detail: t("artisan_pillar_4_detail"),
+      icon: Database,
+    },
+  ];
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -145,31 +147,29 @@ export const ArtisanDashboard = () => {
             >
               <div className="flex items-center gap-3 uppercase tracking-[0.32em] text-xs text-[#9A5A38] mb-7">
                 <ShieldCheck size={14} />
-                Artisan Identity Registry
+                {t("artisan_label")}
               </div>
 
               <h1 className="font-serif text-5xl md:text-7xl leading-[0.94] tracking-[-0.045em] mb-8">
-                Your Craft
+                {t("artisan_heading_line_1")}
                 <br />
-                Deserves Permanent
+                {t("artisan_heading_line_2")}
                 <br />
-                Trusted Identity.
+                {t("artisan_heading_line_3")}
               </h1>
 
               <div className="w-28 h-[1px] bg-[#B56A3E] mb-8" />
 
               <p className="text-xl leading-relaxed text-[#5C4636] max-w-2xl mb-10">
-                SkillChain registers artisans, craftspeople, and heritage creators
-                into a verified cultural archive where identity, authorship, and
-                provenance ownership can endure beyond the marketplace.
+                {t("artisan_intro")}
               </p>
 
               <div className="flex flex-wrap gap-4">
                 {[
-                  "DID-backed identity",
-                  "Provenance ownership",
-                  "Institutional verification",
-                  "Permanent cultural record",
+                  t("artisan_chip_1"),
+                  t("artisan_chip_2"),
+                  t("artisan_chip_3"),
+                  t("artisan_chip_4"),
                 ].map((item) => (
                   <div
                     key={item}
@@ -194,10 +194,10 @@ export const ArtisanDashboard = () => {
                   <div className="flex items-start justify-between mb-8">
                     <div>
                       <div className="uppercase tracking-[0.3em] text-xs text-[#8B694D] mb-3">
-                        Registry Purpose
+                        {t("artisan_registry_purpose")}
                       </div>
                       <h2 className="font-serif text-3xl leading-tight">
-                        A respectful record for living human craftsmanship
+                        {t("artisan_registry_heading")}
                       </h2>
                     </div>
 
@@ -210,23 +210,23 @@ export const ArtisanDashboard = () => {
                     {[
                       {
                         icon: Fingerprint,
-                        label: "Identity",
-                        value: "The artisan is represented as a verified human creator.",
+                        label: t("artisan_card_identity"),
+                        value: t("artisan_card_identity_value"),
                       },
                       {
                         icon: ScrollText,
-                        label: "Ownership",
-                        value: "Future works can be tied back to their rightful maker.",
+                        label: t("artisan_card_ownership"),
+                        value: t("artisan_card_ownership_value"),
                       },
                       {
                         icon: Landmark,
-                        label: "Institutional trust",
-                        value: "Approval and legitimacy can be confirmed through trusted issuers.",
+                        label: t("artisan_card_institutional_trust"),
+                        value: t("artisan_card_institutional_trust_value"),
                       },
                       {
                         icon: LockKeyhole,
-                        label: "Permanence",
-                        value: "Authorship is prepared for durable blockchain-backed provenance.",
+                        label: t("artisan_card_permanence"),
+                        value: t("artisan_card_permanence_value"),
                       },
                     ].map((item) => (
                       <div
@@ -262,66 +262,65 @@ export const ArtisanDashboard = () => {
               className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10"
             >
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
-                Registration Form
+                {t("artisan_registration_form")}
               </div>
-              <h2 className="font-serif text-4xl mb-4">Enter the cultural identity registry</h2>
+              <h2 className="font-serif text-4xl mb-4">{t("artisan_registration_heading")}</h2>
               <p className="text-[#5C4636] leading-relaxed mb-8 max-w-2xl">
-                Register the artisan identity that should be protected, represented,
-                and prepared for provenance ownership across future works.
+                {t("artisan_registration_body")}
               </p>
 
               <form onSubmit={handleRegister} className="space-y-6">
                 <div>
                   <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                    Artisan Name
+                    {t("artisan_name")}
                   </label>
                   <input
                     className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder="Name of the artisan or heritage creator"
+                    placeholder={t("artisan_name_placeholder")}
                   />
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                      Craft Tradition
+                      {t("artisan_craft_tradition")}
                     </label>
                     <input
                       className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
                       required
                       value={form.craft_type}
                       onChange={(e) => setForm({ ...form, craft_type: e.target.value })}
-                      placeholder="Banarasi weaving, pottery, embroidery..."
+                      placeholder={t("artisan_craft_placeholder")}
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                      Cluster / Guild
+                      {t("artisan_cluster")}
                     </label>
                     <input
                       className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
                       required
                       value={form.cluster}
                       onChange={(e) => setForm({ ...form, cluster: e.target.value })}
-                      placeholder="Workshop, collective, cluster, or institution"
+                      placeholder={t("artisan_cluster_placeholder")}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                    Place of Practice
+                    {t("artisan_place_of_practice")}
                   </label>
                   <input
                     className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
                     required
                     value={form.location}
                     onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    placeholder="City, district, state, or cultural region"
+                    placeholder={t("artisan_place_placeholder")}
                   />
                 </div>
 
@@ -331,7 +330,7 @@ export const ArtisanDashboard = () => {
                   className="w-full bg-[#B56A3E] hover:bg-[#9f5730] transition duration-300 text-white py-5 text-lg tracking-wide shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
                 >
                   <UserPlus size={18} />
-                  {loading ? "Submitting identity record..." : "Submit Artisan Record"}
+                  {loading ? t("artisan_submit_loading") : t("artisan_submit")}
                 </button>
               </form>
             </motion.div>
@@ -344,13 +343,11 @@ export const ArtisanDashboard = () => {
                 className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8"
               >
                 <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
-                  DID Identity
+                  {t("artisan_did_identity")}
                 </div>
-                <h3 className="font-serif text-3xl mb-4">What this registration creates</h3>
+                <h3 className="font-serif text-3xl mb-4">{t("artisan_did_heading")}</h3>
                 <p className="text-[#5C4636] leading-relaxed">
-                  Approval creates a decentralized identity for the artisan. That DID
-                  becomes the public authorship layer through which future artworks and
-                  records can be verified as belonging to a real human maker.
+                  {t("artisan_did_body")}
                 </p>
               </motion.div>
 
@@ -361,12 +358,10 @@ export const ArtisanDashboard = () => {
                 className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8"
               >
                 <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
-                  Provenance Ownership
+                  {t("artisan_provenance_ownership")}
                 </div>
                 <p className="text-[#5C4636] leading-relaxed">
-                  This is not just a profile. It is the foundation for ownership of
-                  provenance, so every future registration can point back to the creator
-                  who made the work and the tradition from which it came.
+                  {t("artisan_provenance_body")}
                 </p>
               </motion.div>
             </div>
@@ -377,9 +372,9 @@ export const ArtisanDashboard = () => {
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
             <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
-                Trust Indicators
+                {t("artisan_trust_indicators")}
               </div>
-              <h3 className="font-serif text-3xl mb-8">Why the registry is trustworthy</h3>
+              <h3 className="font-serif text-3xl mb-8">{t("artisan_trust_heading")}</h3>
 
               <div className="space-y-5">
                 {trustPillars.map((item) => (
@@ -401,9 +396,9 @@ export const ArtisanDashboard = () => {
 
             <div className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
-                What Happens Next
+                {t("artisan_next_label")}
               </div>
-              <h3 className="font-serif text-3xl mb-8">From registration to verified authorship</h3>
+              <h3 className="font-serif text-3xl mb-8">{t("artisan_next_heading")}</h3>
 
               <div className="space-y-6">
                 {steps.map((step, index) => (
@@ -431,14 +426,11 @@ export const ArtisanDashboard = () => {
         <section className="px-6 pb-24">
           <div className="max-w-7xl mx-auto bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
             <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
-              Institutional References
+              {t("artisan_institutional_references")}
             </div>
-            <h3 className="font-serif text-3xl mb-4">Built for institutions onboarding real artisans</h3>
+            <h3 className="font-serif text-3xl mb-4">{t("artisan_institutional_heading")}</h3>
             <p className="text-[#5C4636] max-w-4xl leading-relaxed">
-              SkillChain is designed for cultural organizations, heritage programs,
-              artisan collectives, and institutions that need a respectful and verifiable
-              way to register the creators they represent. The artisan is not reduced to
-              a user account. They are entered into a durable trust infrastructure.
+              {t("artisan_institutional_body")}
             </p>
           </div>
         </section>

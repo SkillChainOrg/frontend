@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -56,6 +57,7 @@ const normalizeResult = (data) => {
 };
 
 export const VerificationPage = () => {
+  const { t } = useTranslation();
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [result, setResult] = useState(null);
@@ -180,29 +182,27 @@ export const VerificationPage = () => {
           >
             <div className="flex items-center gap-3 uppercase tracking-[0.32em] text-xs text-[#9A5A38] mb-7">
               <ShieldCheck size={14} />
-              Provenance & Identity Verification
+              {t("verification_label")}
             </div>
 
             <h1 className="font-serif text-5xl md:text-7xl leading-[0.93] tracking-[-0.045em] mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
-              Reveal the Human
+              {t("verification_heading_line_1")}
               <br />
-              Behind the Work.
+              {t("verification_heading_line_2")}
             </h1>
 
             <div className="w-28 h-[1px] bg-[#B56A3E] mb-8" />
 
             <p className="text-xl leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-2xl mb-10">
-              SkillChain verifies artwork, certificates, and cultural records by
-              tracing authenticity back to a real creator identity, an anchored
-              provenance trail, and a durable trust record.
+              {t("verification_intro")}
             </p>
 
             <div className="flex flex-wrap gap-4">
               {[
-                "DID-backed artisan identity",
-                "Algorand anchored provenance",
-                "IPFS persistence",
-                "Institutional trust",
+                t("verification_chip_1"),
+                t("verification_chip_2"),
+                t("verification_chip_3"),
+                t("verification_chip_4"),
               ].map((item) => (
                 <div
                   key={item}
@@ -227,10 +227,10 @@ export const VerificationPage = () => {
                 <div className="flex items-start justify-between mb-8">
                   <div>
                     <div className="uppercase tracking-[0.3em] text-xs text-[#8B694D] mb-3">
-                      Verification Record
+                      {t("verification_record")}
                     </div>
                     <h2 className="font-serif text-3xl leading-tight text-[#2B1D16] dark:text-[#F5ECDE]">
-                      Museum-grade trust for living creators
+                      {t("verification_record_heading")}
                     </h2>
                   </div>
 
@@ -243,23 +243,23 @@ export const VerificationPage = () => {
                   {[
                     {
                       icon: ImageIcon,
-                      label: "Artifact Review",
-                      value: "Artwork and certificate-aware verification",
+                      label: t("verification_feature_1_label"),
+                      value: t("verification_feature_1_value"),
                     },
                     {
                       icon: Fingerprint,
-                      label: "Identity Reveal",
-                      value: "DID-linked artisan authenticity",
+                      label: t("verification_feature_2_label"),
+                      value: t("verification_feature_2_value"),
                     },
                     {
                       icon: ScrollText,
-                      label: "Provenance Trail",
-                      value: "Chronology of custody and issuance",
+                      label: t("verification_feature_3_label"),
+                      value: t("verification_feature_3_value"),
                     },
                     {
                       icon: Landmark,
-                      label: "Institutional Trust",
-                      value: "Anchored where institutions participate",
+                      label: t("verification_feature_4_label"),
+                      value: t("verification_feature_4_value"),
                     },
                   ].map((item) => (
                     <div
@@ -290,13 +290,11 @@ export const VerificationPage = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14">
             <div className="uppercase tracking-[0.3em] text-xs text-[#9A5A38] mb-5">
-              Verification Portal
+              {t("verification_portal")}
             </div>
-            <h2 className="font-serif text-5xl mb-6 text-[#2B1D16] dark:text-[#F5ECDE]">Uncover a Provenance Record</h2>
+            <h2 className="font-serif text-5xl mb-6 text-[#2B1D16] dark:text-[#F5ECDE]">{t("verification_portal_heading")}</h2>
             <p className="text-lg text-[#5C4636] dark:text-[#D7C6B4] max-w-3xl mx-auto leading-relaxed">
-              Upload an artwork image, certificate, or archival record. SkillChain
-              will validate authenticity, trace its provenance, and reveal the
-              verified identity attached to that cultural artifact.
+              {t("verification_portal_body")}
             </p>
           </div>
 
@@ -311,8 +309,8 @@ export const VerificationPage = () => {
                 <FileUpload
                   onFileSelect={setFile}
                   accept=".pdf,.jpg,.jpeg,.png,.webp"
-                  label="Drop artwork, certificate, or provenance image"
-                  sublabel="Museum record, artisan certificate, or registered artwork"
+                  label={t("verification_upload_label")}
+                  sublabel={t("verification_upload_sublabel")}
                 />
 
                 <button
@@ -323,12 +321,12 @@ export const VerificationPage = () => {
                   {loading ? (
                     <span className="flex items-center justify-center gap-3">
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Verifying provenance...
+                      {t("verification_loading")}
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-3">
                       <ScanSearch size={20} />
-                      Verify Authenticity
+                      {t("verification_cta")}
                     </span>
                   )}
                 </button>
@@ -340,7 +338,7 @@ export const VerificationPage = () => {
 
               <div className="relative z-10 h-full flex flex-col">
                 <div className="uppercase tracking-[0.26em] text-xs text-[#8B694D] mb-4">
-                  Artifact Preview
+                  {t("verification_preview_label")}
                 </div>
 
                 <div className="flex-1 border border-[#cdb693] dark:border-[#3A2C21] bg-[#f8f1e5] dark:bg-[#15100C] flex items-center justify-center overflow-hidden">
@@ -353,10 +351,9 @@ export const VerificationPage = () => {
                   ) : (
                     <div className="text-center px-8">
                       <ImageIcon className="mx-auto text-[#9A5A38] mb-4" size={34} />
-                      <p className="font-serif text-2xl mb-3 text-[#2B1D16] dark:text-[#F5ECDE]">Awaiting artifact</p>
+                      <p className="font-serif text-2xl mb-3 text-[#2B1D16] dark:text-[#F5ECDE]">{t("verification_preview_heading")}</p>
                       <p className="text-[#6D5646] dark:text-[#D7C6B4] leading-relaxed">
-                        Your uploaded work will appear here before its creator
-                        record and provenance trail are revealed.
+                        {t("verification_preview_body")}
                       </p>
                     </div>
                   )}

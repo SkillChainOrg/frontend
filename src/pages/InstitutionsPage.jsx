@@ -1,4 +1,8 @@
+import { useTranslation } from "react-i18next";
+
 export default function InstitutionsPage() {
+  const { t } = useTranslation();
+
   const institutions = [
     "National Textile Heritage Council",
     "Museum of Indigenous Craft",
@@ -11,11 +15,11 @@ export default function InstitutionsPage() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-20">
           <p className="uppercase tracking-[0.35em] text-[11px] text-[#B8744F] mb-5">
-            Institutional Network
+            {t("institutions_label")}
           </p>
 
           <h1 className="font-serif text-6xl leading-tight max-w-4xl text-[#2B1D16] dark:text-[#F5ECDE]">
-            Trusted infrastructure for preserving cultural provenance.
+            {t("institutions_heading")}
           </h1>
         </div>
 
@@ -26,7 +30,7 @@ export default function InstitutionsPage() {
               className="border border-[#d8c7ab] dark:border-[#3A2C21] bg-[#F7EFE1] dark:bg-[#16110D] p-10"
             >
               <div className="uppercase tracking-[0.3em] text-[10px] text-[#B8744F] mb-4">
-                Onboarded Institution
+                {t("institutions_onboarded")}
               </div>
 
               <h2 className="font-serif text-3xl leading-snug text-[#2B1D16] dark:text-[#F5ECDE]">

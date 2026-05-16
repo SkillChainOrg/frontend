@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   X,
   Wallet,
@@ -97,11 +98,9 @@ const InlineCopy = ({ text }) => {
 };
 
 // ─── Step indicators ──────────────────────────────────────────────────────────
-const STEPS = ["402 Challenge", "Authorize", "Processing", "Ownership Transferred"];
-
-const StepBar = ({ current }) => (
+const StepBar = ({ current, steps }) => (
   <div className="flex items-center gap-0 mb-8">
-    {STEPS.map((label, i) => (
+    {steps.map((label, i) => (
       <React.Fragment key={label}>
         <div className="flex flex-col items-center">
           <div
@@ -123,7 +122,7 @@ const StepBar = ({ current }) => (
             {label}
           </span>
         </div>
-        {i < STEPS.length - 1 && (
+        {i < steps.length - 1 && (
           <div
             className={`flex-1 h-[1px] mx-1 mb-5 transition-all duration-500 ${
               i < current ? "bg-emerald-700" : "bg-[#d0baa0]"
@@ -144,6 +143,7 @@ export const X402ChallengeModal = ({
   collectorName,
   collectorEmail,
 }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState(0); // 0=challenge, 1=authorize, 2=processing, 3=success
   const [walletAddress, setWalletAddress] = useState("");
   const [txResult, setTxResult] = useState(null);
@@ -231,6 +231,13 @@ export const X402ChallengeModal = ({
     onClose();
   };
 
+  const stepLabels = [
+    t("x402_step_challenge"),
+    t("x402_step_authorize"),
+    t("x402_step_processing"),
+    t("ownership_transferred"),
+  ];
+
   return (
     <AnimatePresence>
       {/* Backdrop */}
@@ -274,7 +281,7 @@ export const X402ChallengeModal = ({
           </div>
 
           <div className="px-7 py-6 overflow-y-auto max-h-[calc(100vh-9rem)]">
-            <StepBar current={step} />
+            <StepBar current={step} steps={stepLabels} />
 
             {/* ── STEP 0: 402 challenge ── */}
             <AnimatePresence mode="wait">
@@ -316,7 +323,7 @@ export const X402ChallengeModal = ({
                     onClick={() => setStep(1)}
                     className="mt-5 w-full bg-[#B56A3E] hover:bg-[#9f5730] text-white py-4 tracking-wide transition duration-300 flex items-center justify-center gap-2"
                   >
-                    Respond to Challenge
+                    {t("x402_step_challenge")}
                     <ArrowRight size={16} />
                   </button>
                 </motion.div>
@@ -373,7 +380,7 @@ export const X402ChallengeModal = ({
                       onClick={handleAuthorize}
                       className="flex-1 bg-[#B56A3E] hover:bg-[#9f5b34] text-white py-5 transition duration-300"
                     >
-                      Authorize Payment
+                      {t("authorize_payment")}
                     </button>
                   </div>
                 </motion.div>
@@ -449,7 +456,7 @@ export const X402ChallengeModal = ({
 
                   <div className="text-center mb-6">
                     <div className="uppercase tracking-[0.28em] text-xs text-emerald-700 mb-2">
-                      Ownership Transferred
+                      {t("ownership_transferred")}
                     </div>
                     <h3 className="font-serif text-3xl text-[#2B1D16] dark:text-[#F5ECDE]">
                       You now own this artwork
@@ -463,7 +470,7 @@ export const X402ChallengeModal = ({
                   {txResult?.tx_id && (
                     <div className="p-4 border border-emerald-700/20 bg-emerald-700/5 space-y-3 text-sm mb-5">
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-[#9A5A38] uppercase tracking-[0.15em] text-xs">Transaction</span>
+                        <span className="text-[#9A5A38] uppercase tracking-[0.15em] text-xs">{t("transaction_hash")}</span>
                         <div className="flex items-center font-mono text-xs text-[#2B1D16] dark:text-[#F5ECDE] break-all text-right">
                           {txResult.tx_id}
                           <InlineCopy text={txResult.tx_id} />
