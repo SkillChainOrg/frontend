@@ -4,6 +4,22 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL 
 });
 
+export async function resolveDid(did) {
+  const response = await fetch(
+    `${API_BASE_URL}/did/${encodeURIComponent(did)}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to resolve DID");
+  }
+
+  return response.json();
+}
+
+export function getDidViewerUrl(did) {
+  return `${API_BASE_URL}/did/view/${encodeURIComponent(did)}`;
+}
+
 // Request interceptor for auth headers
 api.interceptors.request.use((config) => {
   const apiKey = localStorage.getItem('institution_api_key');

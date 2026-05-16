@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,9 @@ import { useToast } from "../context/ToastContext";
 import * as api from "../api/api";
 
 export const ArtisanDashboard = () => {
+  const [showDidModal, setShowDidModal] = useState(false);
+  const [didDocument, setDidDocument] = useState(null);
+  const [loadingDid, setLoadingDid] = useState(false);
   const { t } = useTranslation();
   const [artisan, setArtisan] = useState(null);
   const [registered, setRegistered] = useState(false);
@@ -104,6 +107,21 @@ export const ArtisanDashboard = () => {
       setLoading(false);
     }
   };
+  const handleResolveDid = async () => {
+    try {
+      setLoadingDid(true);
+
+      const result = await api.resolveDid(artisan.did);
+
+      setDidDocument(result);
+      setShowDidModal(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingDid(false);
+    }
+  };
+
 
   const handleAddArtwork = async (e) => {
     e.preventDefault();
@@ -440,7 +458,7 @@ export const ArtisanDashboard = () => {
 
   return (
     <div className="min-h-screen bg-[#F0E7D3] dark:bg-[#0F0B08] text-[#2B1D16] dark:text-[#F5ECDE] transition-colors duration-500 px-6 py-12">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto"></div>
         <div className="grid md:grid-cols-3 gap-6 mb-10">
           <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
             <div className="flex items-center gap-3 mb-5">
@@ -505,6 +523,8 @@ export const ArtisanDashboard = () => {
               )}
             </div>
           </div>
+        </div>
+        
 
           <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col justify-between">
             <div>
@@ -529,7 +549,7 @@ export const ArtisanDashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        
 
         {artisan.did ? (
           <>
@@ -541,11 +561,33 @@ export const ArtisanDashboard = () => {
                   <StatusBadge status="verified" text="Approved" />
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center gap-3 p-3 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                     <span className="text-sm text-[#8B694D] w-20">DID</span>
-                    <code className="flex-1 font-mono text-sm truncate">{artisan.did}</code>
+
+                    <code className="flex-1 font-mono text-sm truncate">
+                      {artisan.did}
+                    </code>
+
                     <CopyButton text={artisan.did} label="DID" />
+                  </div>
+
+                  <div className="flex flex-wrap gap-4">
+                    <button
+                      onClick={handleResolveDid}
+                      className="px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"
+                    >
+                      {loadingDid ? "Resolving..." : "Resolve DID"}
+                    </button>
+
+                    <a
+                      href={api.getDidViewerUrl(artisan.did)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-5 py-3 border border-[#B56A3E] text-[#B56A3E] rounded-lg hover:bg-[#B56A3E] hover:text-white transition"
+                    >
+                      View Identity Document
+                    </a>
                   </div>
                 </div>
               </div>
@@ -674,9 +716,40 @@ export const ArtisanDashboard = () => {
                 </div>
               )}
             </div>
-          </>
+        </>
         ) : null}
+
+      {showDidModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
+          <div className="bg-[#F4EBDC] dark:bg-[#16110D] w-full max-w-4xl rounded-2xl border border-[#d8c7ab] overflow-hidden shadow-2xl">
+
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#d8c7ab]/30">
+              <div>
+                <h2 className="font-serif text-2xl">
+                  DID Resolution
+                </h2>
+
+                <p className="text-sm opacity-70 mt-1">
+                  W3C DID Document Resolution
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowDidModal(false)}
+                className="text-2xl"
+              >
+                Close
+              </button>
+
+            <div className="p-6 overflow-auto max-h-[75vh]">
+              <pre className="text-xs whitespace-pre-wrap break-all bg-black text-green-400 rounded-xl p-5 overflow-auto">
+                {JSON.stringify(didDocument, null, 2)}
+              </pre>
+            </div>
+          </div>
+        </div>
       </div>
+      )}
     </div>
   );
-};
+}; 
