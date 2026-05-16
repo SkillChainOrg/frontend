@@ -10,6 +10,7 @@ import { ArtisanSearchPage } from "./pages/ArtisanSearchPage";
 import { ArtisanDetailPage } from "./pages/ArtisanDetailPage";
 import  InstitutionsPage   from "./pages/InstitutionsPage";
 import  ArtworksPage      from "./pages/ArtworksPage";
+import Navbar from "./components/Navbar";
 // Recommended upcoming pages
 //import { ProvenanceExplorerPage } from "./pages/ProvenanceExplorerPage";
 //import { InfrastructureStatusPage } from "./pages/InfrastructureStatusPage";
@@ -17,6 +18,7 @@ import  ArtworksPage      from "./pages/ArtworksPage";
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         {/* ─────────────────────────────────────
             Core Product Routes

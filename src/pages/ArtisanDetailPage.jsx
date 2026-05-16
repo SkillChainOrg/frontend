@@ -33,7 +33,7 @@ export function ArtisanDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f5ecde] text-[#2d1c14]">
+      <div className="min-h-screen bg-[#F4EBDC]">
         <div className="text-center">
           <div className="mb-5 h-10 w-10 animate-spin rounded-full border-2 border-[#b8744f] border-t-transparent mx-auto" />
           <h1 className="font-serif text-4xl">Loading Provenance Record</h1>

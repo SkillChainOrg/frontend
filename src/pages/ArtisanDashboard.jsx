@@ -131,7 +131,7 @@ export const ArtisanDashboard = () => {
 
   if (!registered) {
     return (
-      <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
+     <div className="min-h-screen bg-[#F4EBDC]">
         <section className="relative px-6 pt-28 pb-20 border-b border-[#d8c7ab] overflow-hidden">
           <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
           <div className="absolute top-[-140px] left-[-120px] w-[420px] h-[420px] rounded-full bg-[#D8B38A]/20 blur-3xl" />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, ChevronDown } from "lucide-react";
+import heroImage from "../assets/hero.jpg";
 
 export default function LandingPage() {
   const [showNavbar, setShowNavbar] = useState(false);
@@ -52,52 +53,6 @@ export default function LandingPage() {
 
   return (
     <div className="bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
-      {/* ================= NAVBAR ================= */}
-      <motion.nav
-        initial={{ y: -100, opacity: 0 }}
-        animate={{
-          y: showNavbar ? 0 : -20,
-          opacity: showNavbar ? 1 : 0.92,
-        }}
-        transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[#F0E7D3]/80 border-b border-[#d8c7ab]"
-      >
-        <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
-          <h2 className="font-serif text-2xl tracking-wide">
-            SkillChain
-          </h2>
-
-          <div className="flex items-center gap-10 text-sm tracking-[0.18em] uppercase">
-            <Link
-              to="/verify"
-              className="hover:text-[#B56A3E] transition"
-            >
-              Verify
-            </Link>
-
-            <Link
-              to="/artworks"
-              className="hover:text-[#B56A3E] transition"
-            >
-              Artworks
-            </Link>
-
-            <Link
-              to="/artisan"
-              className="hover:text-[#B56A3E] transition"
-            >
-              Artisans
-            </Link>
-
-            <Link
-              to="/institutions"
-              className="hover:text-[#B56A3E] transition"
-            >
-              Institutions
-            </Link>
-          </div>
-        </div>
-      </motion.nav>
 
       {/* ================= HERO SECTION ================= */}
       <section className="relative min-h-screen flex items-center justify-center px-6">
@@ -272,7 +227,11 @@ export default function LandingPage() {
                 </div>
 
                 <div className="font-serif text-4xl text-[#6F5748]">
-                  Add Your Image Here
+                  <img
+                    src={heroImage}
+                    alt="SkillChain Heritage Artwork"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -280,6 +239,6 @@ export default function LandingPage() {
         </div>
       </section>
     </div>
-    
+
   );
 }

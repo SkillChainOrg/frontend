@@ -7,7 +7,7 @@ export default function InstitutionsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F0B08] text-[#F5ECDE] px-6 py-24">
+    <div className="min-h-screen pt-28 bg-[#F0E7D3]">
       <div className="max-w-6xl mx-auto">
         <div className="mb-20">
           <p className="uppercase tracking-[0.35em] text-[11px] text-[#B8744F] mb-5">

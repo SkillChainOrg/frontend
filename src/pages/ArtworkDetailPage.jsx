@@ -122,7 +122,7 @@ export const ArtworkDetailPage = () => {
 };
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4EBDC]">
         <div className="text-[#7A6555] text-lg">
           Preparing provenance object…
         </div>

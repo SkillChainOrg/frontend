@@ -166,7 +166,7 @@ export const VerificationPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
+    <div className="min-h-screen bg-[#F4EBDC]">
       <section className="relative px-6 pt-28 pb-24 border-b border-[#d8c7ab] overflow-hidden">
         <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
         <div className="absolute top-[-120px] left-[-90px] w-[380px] h-[380px] rounded-full bg-[#D8B38A]/20 blur-3xl" />

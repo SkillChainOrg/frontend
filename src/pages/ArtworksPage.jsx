@@ -6,6 +6,9 @@ import {
   Coins,
   Fingerprint,
 } from "lucide-react";
+import textileImg from "../assets/artworks/textile.jpg";
+import vesselImg from "../assets/artworks/vessel.jpg";
+import indigoImg from "../assets/artworks/indigo.jpg";
 
 const artworks = [
   {
@@ -14,8 +17,7 @@ const artworks = [
     region: "Kutch, India",
     price: "1.5 ALGO",
     verified: true,
-    image:
-      "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop",
+    image: textileImg,
     tx: "ALGOTX_7F3A91BC2",
   },
   {
@@ -24,8 +26,7 @@ const artworks = [
     region: "Oaxaca, Mexico",
     price: "2.1 ALGO",
     verified: true,
-    image:
-      "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1200&auto=format&fit=crop",
+    image: vesselImg,
     tx: "ALGOTX_91AC72DD4",
   },
   {
@@ -34,15 +35,14 @@ const artworks = [
     region: "Kyoto, Japan",
     price: "1.2 ALGO",
     verified: true,
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
+    image: indigoImg,
     tx: "ALGOTX_72DE91AF8",
   },
 ];
 
 export default function ArtworksPage() {
   return (
-    <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
+    <div className="min-h-screen pt-28 bg-[#F0E7D3]">
       {/* ================= HERO ================= */}
       <section className="relative px-6 pt-40 pb-24 border-b border-[#dbc9ad] overflow-hidden">
         <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
