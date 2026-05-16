@@ -321,18 +321,35 @@ export const X402ChallengeModal = ({
 
                   <div className="flex gap-3">
                     <button
-                      onClick={() => setStep(0)}
-                      className="px-5 py-3.5 border border-[#d8c6aa] text-[#5C4636] hover:bg-[#ece4d4] transition text-sm"
+                      onClick={async () => {
+                        try {
+                          setStep(2);
+
+                          // simulate network/payment processing
+                          await new Promise((resolve) =>
+                            setTimeout(resolve, 2200)
+                          );
+
+                          setStep(4);
+
+                          // simulate provenance update
+                          if (onOwnershipTransferred) {
+                            await onOwnershipTransferred();
+                          }
+
+                          // auto close after success
+                          setTimeout(() => {
+                            onClose();
+                          }, 2500);
+
+                        } catch (e) {
+                          console.error(e);
+                        }
+                      }}
+                      className="flex-1 bg-[#B56A3E] hover:bg-[#9f5b34] text-white py-5 transition duration-300"
                     >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleAuthorize}
-                      className="flex-1 bg-[#B56A3E] hover:bg-[#9f5730] text-white py-3.5 tracking-wide transition duration-300 flex items-center justify-center gap-2"
-                    >
-                      <ShieldCheck size={16} />
                       Authorize Payment
-                    </button>
+                  </button>
                   </div>
                 </motion.div>
               )}
