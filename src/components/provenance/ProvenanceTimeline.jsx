@@ -110,7 +110,7 @@ const EventNode = ({ event, index, isLast }) => {
       </div>
 
       {/* ── Event card ── */}
-      <div className={`flex-1 mb-5 p-4 border ${cfg.border} ${cfg.bg} transition-all`}>
+      <div className={`flex-1 min-w-0 mb-5 p-4 border ${cfg.border} ${cfg.bg} transition-all`}>
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
@@ -139,11 +139,11 @@ const EventNode = ({ event, index, isLast }) => {
 
             {/* Transaction hash */}
             {event.tx_id && (
-              <div className="flex items-center gap-1.5 font-mono text-xs text-[#7a6555]">
+              <div className="flex items-center gap-1.5 font-mono text-xs text-[#7a6555] min-w-0">
                 <span className="text-[#9A5A38] uppercase tracking-wider text-[9px]">
                   TX
                 </span>
-                {shorten(event.tx_id)}
+                <span className="break-all">{event.tx_id}</span>
                 <a
                   href={`https://testnet.explorer.perawallet.app/tx/${event.tx_id}`}
                   target="_blank"
@@ -211,7 +211,7 @@ export const ProvenanceTimeline = ({ events = [], artisan, artwork }) => {
 
   if (allEvents.length === 0) {
     return (
-      <div className="py-8 text-center text-[#9A5A38] border border-dashed border-[#d8c6aa] bg-[#fffaf1]">
+      <div className="py-8 text-center text-[#9A5A38] border border-dashed border-[#d8c6aa] dark:border-[#3A2C21] bg-[#fffaf1] dark:bg-[#1E1712]">
         <Fingerprint size={24} className="mx-auto mb-3 opacity-40" />
         <p className="text-sm">No provenance events recorded yet.</p>
       </div>
@@ -221,16 +221,16 @@ export const ProvenanceTimeline = ({ events = [], artisan, artwork }) => {
   return (
     <div>
       {/* Header stat */}
-      <div className="flex items-center gap-5 mb-6 pb-4 border-b border-[#e2d4bc]">
+      <div className="flex items-center gap-5 mb-6 pb-4 border-b border-[#e2d4bc] dark:border-[#3A2C21]">
         <div className="text-center">
-          <div className="font-serif text-3xl text-[#2B1D16]">{allEvents.length}</div>
+          <div className="font-serif text-3xl text-[#2B1D16] dark:text-[#F5ECDE]">{allEvents.length}</div>
           <div className="uppercase tracking-[0.18em] text-[9px] text-[#9A5A38] mt-0.5">
             Events
           </div>
         </div>
-        <div className="h-8 w-px bg-[#d8c6aa]" />
+        <div className="h-8 w-px bg-[#d8c6aa] dark:bg-[#3A2C21]" />
         <div className="text-center">
-          <div className="font-serif text-3xl text-[#2B1D16]">
+          <div className="font-serif text-3xl text-[#2B1D16] dark:text-[#F5ECDE]">
             {allEvents.filter((e) =>
               (e.provenance_event_type || e.event_type || "")
                 .toLowerCase()
@@ -241,7 +241,7 @@ export const ProvenanceTimeline = ({ events = [], artisan, artwork }) => {
             Transfers
           </div>
         </div>
-        <div className="h-8 w-px bg-[#d8c6aa]" />
+        <div className="h-8 w-px bg-[#d8c6aa] dark:bg-[#3A2C21]" />
         <div className="flex-1 text-right">
           <div className="uppercase tracking-[0.2em] text-[9px] text-[#9A5A38] mb-1">
             Chain
@@ -270,7 +270,7 @@ export const ProvenanceTimeline = ({ events = [], artisan, artwork }) => {
             Provenance origin ·{" "}
           </span>
           <span className="font-mono text-xs text-[#c8a97a] break-all">
-            {artisan?.did ? shorten(artisan.did, 22) : "DID not resolved"}
+            {artisan?.did || "DID not resolved"}
           </span>
         </div>
         <CheckCircle2 size={13} className="text-emerald-600 shrink-0" />

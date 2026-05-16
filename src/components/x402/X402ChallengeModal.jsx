@@ -140,6 +140,7 @@ export const X402ChallengeModal = ({
   artwork,
   onClose,
   onSuccess,
+  onOwnershipTransferred,
   collectorName,
   collectorEmail,
 }) => {
@@ -247,32 +248,32 @@ export const X402ChallengeModal = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 12 }}
         transition={{ type: "spring", stiffness: 280, damping: 28 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none overflow-y-auto"
       >
         <div
-          className="pointer-events-auto w-full max-w-xl bg-[#F7F0E1] border border-[#d8c6aa] shadow-[0_32px_80px_rgba(0,0,0,0.22)] overflow-hidden"
+          className="pointer-events-auto my-auto w-full max-w-xl max-h-[calc(100vh-2rem)] bg-[#F7F0E1] dark:bg-[#17120E] border border-[#d8c6aa] dark:border-[#3A2C21] shadow-[0_32px_80px_rgba(0,0,0,0.22)] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Modal header */}
-          <div className="flex items-center justify-between px-7 pt-7 pb-5 border-b border-[#e2d4bc]">
+          <div className="flex items-center justify-between px-7 pt-7 pb-5 border-b border-[#e2d4bc] dark:border-[#3A2C21]">
             <div>
               <div className="flex items-center gap-2 uppercase tracking-[0.28em] text-[9px] text-[#9A5A38] mb-1.5">
                 <Zap size={10} />
                 x402 Protocol
               </div>
-              <h2 className="font-serif text-2xl text-[#2B1D16]">Artwork Acquisition</h2>
+              <h2 className="font-serif text-2xl text-[#2B1D16] dark:text-[#F5ECDE]">Artwork Acquisition</h2>
             </div>
             {step < 2 && (
               <button
                 onClick={onClose}
-                className="w-9 h-9 rounded-full border border-[#d8c6aa] flex items-center justify-center text-[#9A5A38] hover:bg-[#e8dcc8] transition"
+                className="w-9 h-9 rounded-full border border-[#d8c6aa] dark:border-[#3A2C21] flex items-center justify-center text-[#9A5A38] hover:bg-[#e8dcc8] dark:hover:bg-[#211913] transition"
               >
                 <X size={16} />
               </button>
             )}
           </div>
 
-          <div className="px-7 py-6">
+          <div className="px-7 py-6 overflow-y-auto max-h-[calc(100vh-9rem)]">
             <StepBar current={step} />
 
             {/* ── STEP 0: 402 challenge ── */}
@@ -286,7 +287,7 @@ export const X402ChallengeModal = ({
                   transition={{ duration: 0.25 }}
                 >
                   <div className="mb-5">
-                    <p className="text-[#5C4636] leading-relaxed mb-1">
+                    <p className="text-[#5C4636] dark:text-[#D7C6B4] leading-relaxed mb-1">
                       This artwork is gated behind an{" "}
                       <span className="font-mono text-sm text-[#B56A3E] bg-[#f0e4d0] px-1">HTTP 402</span>{" "}
                       payment challenge. Ownership transfers natively through payment.
@@ -298,12 +299,12 @@ export const X402ChallengeModal = ({
                     price={`${price} ALGO`}
                   />
 
-                  <div className="mt-5 p-4 border border-[#d8c6aa] bg-[#fffaf1] flex items-center justify-between">
+                  <div className="mt-5 p-4 border border-[#d8c6aa] dark:border-[#3A2C21] bg-[#fffaf1] dark:bg-[#1E1712] flex items-center justify-between gap-4">
                     <div>
                       <div className="uppercase tracking-[0.2em] text-xs text-[#9A5A38] mb-1">
                         Acquisition price
                       </div>
-                      <div className="font-serif text-2xl text-[#2B1D16]">{price} ALGO</div>
+                      <div className="font-serif text-2xl text-[#2B1D16] dark:text-[#F5ECDE]">{price} ALGO</div>
                     </div>
                     <div className="flex items-center gap-2 text-[#9A5A38]">
                       <Lock size={18} />
@@ -330,7 +331,7 @@ export const X402ChallengeModal = ({
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.25 }}
                 >
-                  <p className="text-[#5C4636] leading-relaxed mb-5">
+                  <p className="text-[#5C4636] dark:text-[#D7C6B4] leading-relaxed mb-5">
                     Authorize the payment to satisfy the 402 challenge. Settlement
                     confirmation becomes a permanent provenance event on Algorand.
                   </p>
@@ -343,7 +344,7 @@ export const X402ChallengeModal = ({
                       <div className="flex gap-2">
                         <Wallet size={16} className="shrink-0 mt-[14px] text-[#9A5A38]" />
                         <input
-                          className="flex-1 px-4 py-3 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition font-mono text-sm"
+                          className="flex-1 px-4 py-3 border border-[#cfb99d] dark:border-[#3A2C21] bg-[#fffaf1] dark:bg-[#1E1712] outline-none focus:border-[#B56A3E] transition font-mono text-sm break-all dark:text-[#F5ECDE]"
                           placeholder="ALGO wallet address or leave blank for demo"
                           value={walletAddress}
                           onChange={(e) => setWalletAddress(e.target.value)}
@@ -351,7 +352,7 @@ export const X402ChallengeModal = ({
                       </div>
                     </div>
 
-                    <div className="p-4 border border-[#d8c6aa] bg-[#fffaf1] space-y-2 text-sm">
+                    <div className="p-4 border border-[#d8c6aa] dark:border-[#3A2C21] bg-[#fffaf1] dark:bg-[#1E1712] space-y-2 text-sm">
                       {[
                         ["Collector", collectorName || "Anonymous"],
                         ["Network", "Algorand Testnet"],
@@ -359,9 +360,9 @@ export const X402ChallengeModal = ({
                         ["Protocol", "x402 / HTTP 402 Payment Required"],
                         ["Provenance event", "ownership_transfer"],
                       ].map(([k, v]) => (
-                        <div key={k} className="flex items-center justify-between">
+                        <div key={k} className="flex items-center justify-between gap-4">
                           <span className="text-[#9A5A38] uppercase tracking-[0.15em] text-xs">{k}</span>
-                          <span className="text-[#2B1D16] font-medium text-xs">{v}</span>
+                          <span className="text-[#2B1D16] dark:text-[#F5ECDE] font-medium text-xs break-all text-right">{v}</span>
                         </div>
                       ))}
                     </div>
@@ -399,7 +400,7 @@ export const X402ChallengeModal = ({
                     </div>
                   </div>
 
-                  <div className="font-serif text-2xl mb-3">Anchoring on Algorand</div>
+                  <div className="font-serif text-2xl mb-3 text-[#2B1D16] dark:text-[#F5ECDE]">Anchoring on Algorand</div>
 
                   <div className="space-y-2 mt-6 text-left max-w-xs mx-auto">
                     {[
@@ -412,7 +413,7 @@ export const X402ChallengeModal = ({
                         initial={{ opacity: 0, x: -8 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay, duration: 0.4 }}
-                        className="flex items-center gap-3 text-sm text-[#5C4636]"
+                        className="flex items-center gap-3 text-sm text-[#5C4636] dark:text-[#D7C6B4]"
                       >
                         <motion.div
                           animate={{ scale: [1, 1.3, 1] }}
@@ -450,10 +451,10 @@ export const X402ChallengeModal = ({
                     <div className="uppercase tracking-[0.28em] text-xs text-emerald-700 mb-2">
                       Ownership Transferred
                     </div>
-                    <h3 className="font-serif text-3xl text-[#2B1D16]">
+                    <h3 className="font-serif text-3xl text-[#2B1D16] dark:text-[#F5ECDE]">
                       You now own this artwork
                     </h3>
-                    <p className="text-[#5C4636] mt-2 leading-relaxed">
+                    <p className="text-[#5C4636] dark:text-[#D7C6B4] mt-2 leading-relaxed">
                       Settlement is recorded as a permanent provenance event. The ownership
                       chain has been updated on Algorand.
                     </p>
@@ -461,18 +462,18 @@ export const X402ChallengeModal = ({
 
                   {txResult?.tx_id && (
                     <div className="p-4 border border-emerald-700/20 bg-emerald-700/5 space-y-3 text-sm mb-5">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-4">
                         <span className="text-[#9A5A38] uppercase tracking-[0.15em] text-xs">Transaction</span>
-                        <div className="flex items-center font-mono text-xs text-[#2B1D16]">
-                          {txResult.tx_id.slice(0, 18)}...
+                        <div className="flex items-center font-mono text-xs text-[#2B1D16] dark:text-[#F5ECDE] break-all text-right">
+                          {txResult.tx_id}
                           <InlineCopy text={txResult.tx_id} />
                         </div>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-4">
                         <span className="text-[#9A5A38] uppercase tracking-[0.15em] text-xs">Event</span>
                         <span className="text-emerald-700 font-medium text-xs">ownership_transfer ✓</span>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-4">
                         <span className="text-[#9A5A38] uppercase tracking-[0.15em] text-xs">Provenance</span>
                         <span className="text-emerald-700 font-medium text-xs">Updated ✓</span>
                       </div>

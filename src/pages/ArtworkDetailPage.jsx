@@ -9,6 +9,7 @@ import {
   ExternalLink,
   ChevronDown,
 } from "lucide-react";
+import textileImg from "../assets/artworks/textile.jpg";
 
 import * as api from "../api/api";
 import { useToast } from "../context/ToastContext";
@@ -62,7 +63,10 @@ export const ArtworkDetailPage = () => {
 
       if (!mounted) return;
 
-      setArtwork(data.artwork);
+      setArtwork({
+        ...data.artwork,
+        image: textileImg,
+      });
 
       setProvenance(
         data.provenance_history || []
@@ -122,8 +126,8 @@ export const ArtworkDetailPage = () => {
 };
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F4EBDC]">
-        <div className="text-[#7A6555] text-lg">
+      <div className="min-h-screen bg-[#F4EBDC] dark:bg-[#0F0B08] flex items-center justify-center">
+        <div className="text-[#7A6555] dark:text-[#D7C6B4] text-lg">
           Preparing provenance object…
         </div>
       </div>
@@ -132,7 +136,7 @@ export const ArtworkDetailPage = () => {
 
   if (!artwork) {
     return (
-      <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F4EBDC] dark:bg-[#0F0B08] text-[#2B1D16] dark:text-[#F5ECDE] flex items-center justify-center">
         <div>
           <p>This artwork record could not be resolved.</p>
 
@@ -148,7 +152,7 @@ export const ArtworkDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16]">
+    <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] dark:bg-[#0F0B08] dark:text-[#F5ECDE]">
       <section className="px-6 pt-24 pb-32">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.2fr_0.8fr] gap-16">
 
@@ -160,39 +164,43 @@ export const ArtworkDetailPage = () => {
               Certificate of Authenticity
             </p>
 
-            <h1 className="font-serif text-6xl leading-none mb-8">
+            <h1 className="font-serif text-6xl leading-none mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
               {artwork.title || "Untitled Work"}
             </h1>
 
-            <p className="text-xl leading-relaxed text-[#6E5A4B] max-w-2xl">
+            <p className="text-xl leading-relaxed text-[#6E5A4B] dark:text-[#D7C6B4] max-w-2xl">
               {artwork.description ||
                 "A verified cultural work archived through decentralized provenance infrastructure."}
             </p>
 
             {/* ARTWORK OBJECT */}
 
-            <div className="mt-14 bg-[#F7F0E1] border border-[#D9C7B0] shadow-[0_25px_60px_rgba(0,0,0,0.08)] overflow-hidden">
+            <div className="mt-14 bg-[#F7F0E1] dark:bg-[#17120E] border border-[#D9C7B0] dark:border-[#3A2C21] shadow-[0_25px_60px_rgba(0,0,0,0.08)] overflow-hidden">
 
-              <div className="aspect-[4/3] bg-[#E8D8BF] flex items-center justify-center text-[#8A6B53]">
-                Artwork Preview
+              <div className="aspect-[4/5] overflow-hidden bg-[#E3D3B8]">
+                <img
+                  src={artwork.image}
+                  alt={artwork.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
-              <div className="p-8 border-t border-[#D9C7B0]">
+              <div className="p-8 border-t border-[#D9C7B0] dark:border-[#3A2C21]">
 
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
 
-                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                  <div className="bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#DDCCB6] dark:border-[#3A2C21] p-4">
                     <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
                       <Fingerprint size={14} />
                       Registry Identity
                     </div>
 
-                    <div className="mt-3 font-mono text-xs break-all">
+                    <div className="mt-3 font-mono text-xs break-all dark:text-[#E6DACC]">
                       {artwork.artisan_did}
                     </div>
                   </div>
 
-                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                  <div className="bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#DDCCB6] dark:border-[#3A2C21] p-4">
                     <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
                       <ShieldCheck size={14} />
                       Verification Status
@@ -203,18 +211,18 @@ export const ArtworkDetailPage = () => {
                     </div>
                   </div>
 
-                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                  <div className="bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#DDCCB6] dark:border-[#3A2C21] p-4">
                     <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
                       <ScrollText size={14} />
                       IPFS Record
                     </div>
 
-                    <div className="mt-3 font-mono text-xs break-all">
+                    <div className="mt-3 font-mono text-xs break-all dark:text-[#E6DACC]">
                       {artwork.ipfs_cid || "—"}
                     </div>
                   </div>
 
-                  <div className="bg-[#FFF9F0] border border-[#DDCCB6] p-4">
+                  <div className="bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#DDCCB6] dark:border-[#3A2C21] p-4">
                     <div className="flex items-center gap-2 uppercase tracking-[0.18em] text-xs text-[#9A7156]">
                       <ExternalLink size={14} />
                       Chain Anchor
@@ -241,7 +249,7 @@ export const ArtworkDetailPage = () => {
 
             {/* ARTISAN REVEAL */}
 
-            <div className="mt-24 border-t border-[#DDCCB6] pt-16">
+            <div className="mt-24 border-t border-[#DDCCB6] dark:border-[#3A2C21] pt-16">
 
               <p className="uppercase tracking-[0.35em] text-xs text-[#B56A3E] mb-5">
                 Crafted by a Verified Artisan
@@ -252,7 +260,7 @@ export const ArtworkDetailPage = () => {
                 className="group"
               >
 
-                <div className="bg-[#F7F0E1] border border-[#DCCAB5] px-8 py-6 shadow-[0_15px_40px_rgba(0,0,0,0.06)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)]">
+                <div className="bg-[#F7F0E1] dark:bg-[#17120E] border border-[#DCCAB5] dark:border-[#3A2C21] px-8 py-6 shadow-[0_15px_40px_rgba(0,0,0,0.06)] transition duration-500 hover:-translate-y-1 hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)]">
 
                   <div className="flex items-center justify-between">
 
@@ -262,11 +270,11 @@ export const ArtworkDetailPage = () => {
                         Registry Linked Identity
                       </p>
 
-                      <h2 className="mt-3 font-serif text-4xl">
+                      <h2 className="mt-3 font-serif text-4xl text-[#2B1D16] dark:text-[#F5ECDE]">
                         Provenance Record
                       </h2>
 
-                      <p className="mt-4 text-[#6E5A4B] max-w-xl">
+                      <p className="mt-4 text-[#6E5A4B] dark:text-[#D7C6B4] max-w-xl">
                         This work is associated with a preserved cultural identity
                         archived through decentralized provenance infrastructure.
                       </p>
@@ -284,7 +292,7 @@ export const ArtworkDetailPage = () => {
               </button>
 
               {showArtisan && (
-                <div className="mt-10 bg-[#F7F0E1] border border-[#DCCAB5] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+                <div className="mt-10 bg-[#F7F0E1] dark:bg-[#17120E] border border-[#DCCAB5] dark:border-[#3A2C21] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
 
                   <div className="grid md:grid-cols-[120px_1fr] gap-8">
 
@@ -296,11 +304,11 @@ export const ArtworkDetailPage = () => {
                         Registry Verified
                       </p>
 
-                      <h3 className="mt-3 font-serif text-5xl">
+                      <h3 className="mt-3 font-serif text-5xl text-[#2B1D16] dark:text-[#F5ECDE]">
                         Artisan Identity
                       </h3>
 
-                      <p className="mt-4 text-[#6E5A4B] leading-relaxed">
+                      <p className="mt-4 text-[#6E5A4B] dark:text-[#D7C6B4] leading-relaxed">
                         Trained through intergenerational lineage and linked
                         to preserved provenance records within the SkillChain archive.
                       </p>
@@ -332,7 +340,7 @@ export const ArtworkDetailPage = () => {
                             Registry Identifier
                           </p>
 
-                          <p className="mt-2 font-mono text-xs break-all">
+                          <p className="mt-2 font-mono text-xs break-all dark:text-[#E6DACC]">
                             {artwork.artisan_did}
                           </p>
                         </div>
@@ -365,34 +373,34 @@ export const ArtworkDetailPage = () => {
 
             {/* ACQUIRE */}
 
-            <div className="bg-[#F7F0E1] border border-[#DCCAB5] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+            <div className="bg-[#F7F0E1] dark:bg-[#17120E] border border-[#DCCAB5] dark:border-[#3A2C21] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
 
               <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-5">
                 Ownership Acquisition
               </p>
 
-              <h2 className="font-serif text-4xl mb-4">
+              <h2 className="font-serif text-4xl mb-4 text-[#2B1D16] dark:text-[#F5ECDE]">
                 Acquire Artwork
               </h2>
 
-              <p className="text-[#6E5A4B] leading-relaxed mb-8">
+              <p className="text-[#6E5A4B] dark:text-[#D7C6B4] leading-relaxed mb-8">
                 Ownership transfer is executed through a native HTTP 402
                 payment challenge and permanently recorded as a provenance event.
               </p>
 
               {/* Ownership Status */}
 
-              <div className="mb-8 bg-[#FFF9F0] border border-[#DDCCB6] p-5">
+              <div className="mb-8 bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#DDCCB6] dark:border-[#3A2C21] p-5">
 
                 <div className="uppercase tracking-[0.18em] text-[10px] text-[#9A7156] mb-3">
                   Current Ownership
                 </div>
 
-                <div className="text-lg text-[#2B1D16]">
+                <div className="text-lg text-[#2B1D16] dark:text-[#F5ECDE] break-all">
                   {ownership?.owner_name || "Original Collector"}
                 </div>
 
-                <div className="mt-2 text-sm text-[#7A6555]">
+                <div className="mt-2 text-sm text-[#7A6555] dark:text-[#C8B8A8]">
                   Provenance-linked ownership state
                 </div>
 
@@ -403,7 +411,7 @@ export const ArtworkDetailPage = () => {
               <div className="space-y-4">
 
                 <input
-                  className="w-full bg-[#FFF9F0] border border-[#D9C6AF] px-5 py-4 outline-none focus:border-[#B56A3E]"
+                  className="w-full bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#D9C6AF] dark:border-[#3A2C21] px-5 py-4 outline-none focus:border-[#B56A3E] dark:text-[#F5ECDE]"
                   placeholder="Collector name"
                   value={collector.name}
                   onChange={(e) =>
@@ -415,7 +423,7 @@ export const ArtworkDetailPage = () => {
                 />
 
                 <input
-                  className="w-full bg-[#FFF9F0] border border-[#D9C6AF] px-5 py-4 outline-none focus:border-[#B56A3E]"
+                  className="w-full bg-[#FFF9F0] dark:bg-[#1E1712] border border-[#D9C6AF] dark:border-[#3A2C21] px-5 py-4 outline-none focus:border-[#B56A3E] dark:text-[#F5ECDE]"
                   placeholder="Collector email"
                   value={collector.email}
                   onChange={(e) =>
@@ -437,13 +445,13 @@ export const ArtworkDetailPage = () => {
 
               {/* Protocol explanation */}
 
-              <div className="mt-8 border-t border-[#DDCCB6] pt-6">
+              <div className="mt-8 border-t border-[#DDCCB6] dark:border-[#3A2C21] pt-6">
 
                 <div className="uppercase tracking-[0.18em] text-[10px] text-[#9A7156] mb-3">
                   Settlement Protocol
                 </div>
 
-                <p className="text-sm leading-relaxed text-[#6E5A4B]">
+                <p className="text-sm leading-relaxed text-[#6E5A4B] dark:text-[#D7C6B4]">
                   SkillChain uses payment-gated ownership transfer infrastructure
                   where acquisition events become permanent provenance records
                   anchored on Algorand.
@@ -455,7 +463,7 @@ export const ArtworkDetailPage = () => {
 
             {/* PROVENANCE */}
 
-            <div className="bg-[#F7F0E1] border border-[#DCCAB5] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
+            <div className="bg-[#F7F0E1] dark:bg-[#17120E] border border-[#DCCAB5] dark:border-[#3A2C21] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
 
               <p className="uppercase tracking-[0.3em] text-[11px] text-[#B56A3E] mb-6">
                 Provenance Timeline

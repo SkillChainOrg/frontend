@@ -166,8 +166,8 @@ export const VerificationPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F4EBDC]">
-      <section className="relative px-6 pt-28 pb-24 border-b border-[#d8c7ab] overflow-hidden">
+    <div className="min-h-screen bg-[#F4EBDC] text-[#2B1D16] dark:bg-[#0F0B08] dark:text-[#F5ECDE]">
+      <section className="relative px-6 pt-28 pb-24 border-b border-[#d8c7ab] dark:border-[#2e241d] overflow-hidden">
         <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
         <div className="absolute top-[-120px] left-[-90px] w-[380px] h-[380px] rounded-full bg-[#D8B38A]/20 blur-3xl" />
         <div className="absolute right-[-110px] bottom-[-180px] w-[520px] h-[520px] rounded-full bg-[#A85B34]/10 blur-3xl" />
@@ -183,7 +183,7 @@ export const VerificationPage = () => {
               Provenance & Identity Verification
             </div>
 
-            <h1 className="font-serif text-5xl md:text-7xl leading-[0.93] tracking-[-0.045em] mb-8">
+            <h1 className="font-serif text-5xl md:text-7xl leading-[0.93] tracking-[-0.045em] mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
               Reveal the Human
               <br />
               Behind the Work.
@@ -191,7 +191,7 @@ export const VerificationPage = () => {
 
             <div className="w-28 h-[1px] bg-[#B56A3E] mb-8" />
 
-            <p className="text-xl leading-relaxed text-[#5C4636] max-w-2xl mb-10">
+            <p className="text-xl leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-2xl mb-10">
               SkillChain verifies artwork, certificates, and cultural records by
               tracing authenticity back to a real creator identity, an anchored
               provenance trail, and a durable trust record.
@@ -220,7 +220,7 @@ export const VerificationPage = () => {
             transition={{ duration: 0.95 }}
             className="relative"
           >
-            <div className="relative bg-[#E8D9BE] border border-[#d3bea0] shadow-2xl p-8 md:p-10 overflow-hidden">
+            <div className="relative bg-[#E8D9BE] dark:bg-[#1A1410] border border-[#d3bea0] dark:border-[#3A2C21] shadow-2xl p-8 md:p-10 overflow-hidden">
               <div className="absolute inset-0 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
 
               <div className="relative z-10">
@@ -229,7 +229,7 @@ export const VerificationPage = () => {
                     <div className="uppercase tracking-[0.3em] text-xs text-[#8B694D] mb-3">
                       Verification Record
                     </div>
-                    <h2 className="font-serif text-3xl leading-tight">
+                    <h2 className="font-serif text-3xl leading-tight text-[#2B1D16] dark:text-[#F5ECDE]">
                       Museum-grade trust for living creators
                     </h2>
                   </div>
@@ -272,7 +272,7 @@ export const VerificationPage = () => {
                           <div className="text-xs uppercase tracking-[0.2em] text-[#8B694D]">
                             {item.label}
                           </div>
-                          <div className="text-[#2B1D16] mt-1">{item.value}</div>
+                          <div className="mt-1 text-[#2B1D16] dark:text-[#F5ECDE]">{item.value}</div>
                         </div>
                       </div>
 
@@ -292,8 +292,8 @@ export const VerificationPage = () => {
             <div className="uppercase tracking-[0.3em] text-xs text-[#9A5A38] mb-5">
               Verification Portal
             </div>
-            <h2 className="font-serif text-5xl mb-6">Uncover a Provenance Record</h2>
-            <p className="text-lg text-[#5C4636] max-w-3xl mx-auto leading-relaxed">
+            <h2 className="font-serif text-5xl mb-6 text-[#2B1D16] dark:text-[#F5ECDE]">Uncover a Provenance Record</h2>
+            <p className="text-lg text-[#5C4636] dark:text-[#D7C6B4] max-w-3xl mx-auto leading-relaxed">
               Upload an artwork image, certificate, or archival record. SkillChain
               will validate authenticity, trace its provenance, and reveal the
               verified identity attached to that cultural artifact.
@@ -304,7 +304,7 @@ export const VerificationPage = () => {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm p-8 md:p-12"
+            className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 bg-[#F7F0E1]/85 dark:bg-[#17120E]/90 border border-[#d8c6aa] dark:border-[#3A2C21] shadow-[0_10px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm p-8 md:p-12"
           >
             <div>
               <form onSubmit={handleVerify} className="space-y-8">
@@ -335,7 +335,7 @@ export const VerificationPage = () => {
               </form>
             </div>
 
-            <div className="relative bg-[#EDE0C7] border border-[#d5bf9c] min-h-[360px] p-6 overflow-hidden">
+            <div className="relative bg-[#EDE0C7] dark:bg-[#1E1712] border border-[#d5bf9c] dark:border-[#3A2C21] min-h-[360px] p-6 overflow-hidden">
               <div className="absolute inset-0 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
 
               <div className="relative z-10 h-full flex flex-col">
@@ -343,7 +343,7 @@ export const VerificationPage = () => {
                   Artifact Preview
                 </div>
 
-                <div className="flex-1 border border-[#cdb693] bg-[#f8f1e5] flex items-center justify-center overflow-hidden">
+                <div className="flex-1 border border-[#cdb693] dark:border-[#3A2C21] bg-[#f8f1e5] dark:bg-[#15100C] flex items-center justify-center overflow-hidden">
                   {previewUrl ? (
                     <img
                       src={previewUrl}
@@ -353,8 +353,8 @@ export const VerificationPage = () => {
                   ) : (
                     <div className="text-center px-8">
                       <ImageIcon className="mx-auto text-[#9A5A38] mb-4" size={34} />
-                      <p className="font-serif text-2xl mb-3">Awaiting artifact</p>
-                      <p className="text-[#6D5646] leading-relaxed">
+                      <p className="font-serif text-2xl mb-3 text-[#2B1D16] dark:text-[#F5ECDE]">Awaiting artifact</p>
+                      <p className="text-[#6D5646] dark:text-[#D7C6B4] leading-relaxed">
                         Your uploaded work will appear here before its creator
                         record and provenance trail are revealed.
                       </p>
@@ -367,7 +367,7 @@ export const VerificationPage = () => {
                     <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-1">
                       File
                     </div>
-                    <div className="truncate">{file?.name || "No upload yet"}</div>
+                    <div className="break-all">{file?.name || "No upload yet"}</div>
                   </div>
                   <div>
                     <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-1">
@@ -389,7 +389,7 @@ export const VerificationPage = () => {
                 className="mt-14 space-y-8"
               >
                 <div className="grid lg:grid-cols-[0.72fr_1.28fr] gap-8">
-                  <div className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8">
+                  <div className="bg-[#E8D9BE] dark:bg-[#1A1410] border border-[#d3bea0] dark:border-[#3A2C21] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8">
                     <div className="flex justify-center mb-8">
                       <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
@@ -412,7 +412,7 @@ export const VerificationPage = () => {
                       <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-3">
                         Verification Status
                       </div>
-                      <h3 className="font-serif text-4xl leading-tight">
+                      <h3 className="font-serif text-4xl leading-tight text-[#2B1D16] dark:text-[#F5ECDE]">
                         {result.verified ? "Creator record uncovered" : "Provenance could not be established"}
                       </h3>
                     </div>
@@ -441,13 +441,13 @@ export const VerificationPage = () => {
                     </div>
                   </div>
 
-                  <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+                  <div className="bg-[#F7F0E1]/85 dark:bg-[#17120E]/90 border border-[#d8c6aa] dark:border-[#3A2C21] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
                     <div className="flex items-center justify-between mb-8">
                       <div>
                         <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-3">
                           Identity Reveal
                         </div>
-                        <h3 className="font-serif text-4xl leading-tight">
+                        <h3 className="font-serif text-4xl leading-tight text-[#2B1D16] dark:text-[#F5ECDE]">
                           This work belongs to a real verified creator
                         </h3>
                       </div>
@@ -459,7 +459,7 @@ export const VerificationPage = () => {
                     </div>
 
                     <div className="grid md:grid-cols-[0.9fr_1.1fr] gap-6">
-                      <div className="bg-[#EDE0C7] border border-[#d2b998] p-6">
+                      <div className="bg-[#EDE0C7] dark:bg-[#1E1712] border border-[#d2b998] dark:border-[#3A2C21] p-6">
                         <div className="w-14 h-14 rounded-full border border-[#B56A3E]/30 flex items-center justify-center mb-5">
                           <Fingerprint className="text-[#B56A3E]" size={22} />
                         </div>
@@ -467,11 +467,11 @@ export const VerificationPage = () => {
                         <div className="uppercase tracking-[0.22em] text-xs text-[#8B694D] mb-2">
                           Verified Artist Identity
                         </div>
-                        <div className="font-serif text-3xl leading-tight mb-4">
+                        <div className="font-serif text-3xl leading-tight mb-4 text-[#2B1D16] dark:text-[#F5ECDE]">
                           {result.verified ? artistLabel : "Identity unavailable"}
                         </div>
 
-                        <div className="space-y-3 text-sm text-[#5C4636]">
+                        <div className="space-y-3 text-sm text-[#5C4636] dark:text-[#D7C6B4]">
                           <div>
                             <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-1">
                               DID
@@ -498,7 +498,7 @@ export const VerificationPage = () => {
                               <div className="uppercase text-xs tracking-[0.2em] text-[#8B694D] mb-1">
                                 {item.label}
                               </div>
-                              <div className="text-lg">{item.value}</div>
+                              <div className="text-lg text-[#2B1D16] dark:text-[#F5ECDE] break-all">{item.value}</div>
                             </div>
                           </div>
                         ))}
@@ -508,11 +508,11 @@ export const VerificationPage = () => {
                 </div>
 
                 <div className="grid lg:grid-cols-[1fr_1fr] gap-8">
-                  <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+                  <div className="bg-[#F7F0E1]/85 dark:bg-[#17120E]/90 border border-[#d8c6aa] dark:border-[#3A2C21] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
                     <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                       Provenance Timeline
                     </div>
-                    <h3 className="font-serif text-3xl mb-8">How authenticity was established</h3>
+                    <h3 className="font-serif text-3xl mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">How authenticity was established</h3>
 
                     <div className="space-y-6">
                       {provenanceSteps.map((step, index) => (
@@ -533,19 +533,19 @@ export const VerificationPage = () => {
                           </div>
 
                           <div className="pt-1 pb-4">
-                            <div className="font-medium text-lg mb-1">{step.title}</div>
-                            <p className="text-[#5C4636] leading-relaxed">{step.detail}</p>
+                            <div className="font-medium text-lg mb-1 text-[#2B1D16] dark:text-[#F5ECDE]">{step.title}</div>
+                            <p className="text-[#5C4636] dark:text-[#D7C6B4] leading-relaxed break-all">{step.detail}</p>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 overflow-hidden">
+                  <div className="bg-[#E8D9BE] dark:bg-[#1A1410] border border-[#d3bea0] dark:border-[#3A2C21] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 overflow-hidden">
                     <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                       Anchoring & Persistence
                     </div>
-                    <h3 className="font-serif text-3xl mb-8">Durable trust record</h3>
+                    <h3 className="font-serif text-3xl mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">Durable trust record</h3>
 
                     <div className="space-y-5">
                       {result.tx_id && (
@@ -554,7 +554,7 @@ export const VerificationPage = () => {
                             <div className="uppercase text-xs tracking-[0.2em] text-[#8B694D] mb-1">
                               Algorand Anchor
                             </div>
-                            <div className="font-mono text-sm break-all">{shorten(result.tx_id, 20, 10)}</div>
+                            <div className="font-mono text-sm break-all">{result.tx_id}</div>
                           </div>
 
                           <a
@@ -575,7 +575,7 @@ export const VerificationPage = () => {
                             <div className="uppercase text-xs tracking-[0.2em] text-[#8B694D] mb-1">
                               IPFS Persistence
                             </div>
-                            <div className="font-mono text-sm break-all">{shorten(result.ipfs_cid, 24, 10)}</div>
+                            <div className="font-mono text-sm break-all">{result.ipfs_cid}</div>
                           </div>
                           <CopyButton text={result.ipfs_cid} label="IPFS CID" />
                         </div>
@@ -587,7 +587,7 @@ export const VerificationPage = () => {
                             <div className="uppercase text-xs tracking-[0.2em] text-[#8B694D] mb-1">
                               DID Identity
                             </div>
-                            <div className="font-mono text-sm break-all">{shorten(artistDid, 24, 10)}</div>
+                            <div className="font-mono text-sm break-all">{artistDid}</div>
                           </div>
                           <CopyButton text={artistDid} label="DID" />
                         </div>
@@ -598,7 +598,7 @@ export const VerificationPage = () => {
                           <div className="uppercase text-xs tracking-[0.2em] text-[#8B694D] mb-1">
                             Integrity Confirmation
                           </div>
-                          <div className="text-lg">
+                          <div className="text-lg text-[#2B1D16] dark:text-[#F5ECDE]">
                             {result.hmac_valid || result.signature_valid
                               ? "Tamper-proof evidence confirmed"
                               : "Integrity evidence unavailable"}
@@ -620,10 +620,10 @@ export const VerificationPage = () => {
                 </div>
 
                 {!result.verified && (
-                  <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 text-center">
+                  <div className="bg-[#F7F0E1]/85 dark:bg-[#17120E]/90 border border-[#d8c6aa] dark:border-[#3A2C21] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 text-center">
                     <XCircle className="mx-auto text-red-700 mb-4" size={42} />
-                    <h3 className="font-serif text-3xl mb-3">This upload could not be connected to a trusted provenance record</h3>
-                    <p className="text-[#5C4636] max-w-3xl mx-auto leading-relaxed">
+                    <h3 className="font-serif text-3xl mb-3 text-[#2B1D16] dark:text-[#F5ECDE]">This upload could not be connected to a trusted provenance record</h3>
+                    <p className="text-[#5C4636] dark:text-[#D7C6B4] max-w-3xl mx-auto leading-relaxed">
                       The file may have been altered, corrupted, or never registered through
                       SkillChain&apos;s cultural trust infrastructure. Without a matching
                       provenance trail, we cannot reveal a verified creator identity.

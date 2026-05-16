@@ -4,16 +4,24 @@
 
 @layer base {
   body {
-    @apply bg-ivory text-deep-ink font-sans antialiased;
-    background-image: theme('backgroundImage.parchment-texture');
-  }
-  
-  .dark body {
-    @apply bg-indigo-deep text-ivory;
-    background-image: none;
+    background: #f0e7d3;
+    color: #2b1d16;
+    font-family: Inter, sans-serif;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  @media (prefers-color-scheme: dark) {
+    body {
+      background: #0f0b08;
+      color: #f5ecde;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-serif font-bold tracking-tight;
   }
 }

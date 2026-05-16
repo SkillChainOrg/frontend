@@ -52,7 +52,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
+    <div className="overflow-hidden bg-[#F0E7D3] text-[#2B1D16] dark:bg-[#0F0B08] dark:text-[#F5ECDE]">
 
       {/* ================= HERO SECTION ================= */}
       <section className="relative min-h-screen flex items-center justify-center px-6">
@@ -77,13 +77,13 @@ export default function LandingPage() {
               Blockchain Verified Heritage
             </div>
 
-            <h1 className="font-serif text-[5rem] md:text-[7rem] leading-[0.9] tracking-[-0.04em] mb-8">
+            <h1 className="font-serif text-[5rem] md:text-[7rem] leading-[0.9] tracking-[-0.04em] mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
               SkillChain
             </h1>
 
             <div className="w-24 h-[1px] bg-[#B56A3E] mb-8" />
 
-            <p className="text-xl md:text-2xl leading-relaxed text-[#5C4636] max-w-xl mb-10 font-light">
+            <p className="text-xl md:text-2xl leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-xl mb-10 font-light">
               Preserving human craft through verifiable provenance,
               decentralized identity, and permanent digital heritage.
             </p>
@@ -112,7 +112,7 @@ export default function LandingPage() {
             transition={{ duration: 1.2 }}
             className="relative hidden lg:flex justify-center"
           >
-            <div className="relative bg-[#E8D9BE] shadow-2xl border border-[#d7c3a3] w-[420px] h-[560px] p-10 rotate-[-8deg]">
+            <div className="relative bg-[#E8D9BE] dark:bg-[#1A1410] shadow-2xl border border-[#d7c3a3] dark:border-[#3A2C21] w-[420px] h-[560px] p-10 rotate-[-8deg]">
               {/* Paper texture */}
               <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
 
@@ -121,11 +121,11 @@ export default function LandingPage() {
                   Certificate of Authenticity
                 </div>
 
-                <h3 className="font-serif text-4xl leading-tight mb-10">
+                <h3 className="font-serif text-4xl leading-tight mb-10 text-[#2B1D16] dark:text-[#F5ECDE]">
                   Verified on Blockchain
                 </h3>
 
-                <div className="space-y-6 text-[#5D493C]">
+                <div className="space-y-6 text-[#5D493C] dark:text-[#D7C6B4]">
                   <div>
                     <div className="text-xs uppercase tracking-[0.2em] mb-1 opacity-70">
                       Artwork ID
@@ -189,13 +189,13 @@ export default function LandingPage() {
               Our Mission
             </div>
 
-            <h2 className="font-serif text-5xl leading-tight mb-10">
+            <h2 className="font-serif text-5xl leading-tight mb-10 text-[#2B1D16] dark:text-[#F5ECDE]">
               Empowering Artisans.
               <br />
               Protecting Heritage.
             </h2>
 
-            <p className="text-lg leading-relaxed text-[#5C4636] max-w-xl">
+            <p className="text-lg leading-relaxed text-[#5C4636] dark:text-[#D7C6B4] max-w-xl">
               SkillChain combines decentralized identity and tamper-proof
               provenance infrastructure to preserve human craftsmanship across
               generations.
@@ -210,7 +210,7 @@ export default function LandingPage() {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="w-2 h-2 rounded-full bg-[#B56A3E]" />
-                  <span className="text-[#4E3C31]">{item}</span>
+                  <span className="text-[#4E3C31] dark:text-[#E6DACC]">{item}</span>
                 </div>
               ))}
             </div>
@@ -220,7 +220,7 @@ export default function LandingPage() {
           <div className="relative">
             <div className="absolute inset-0 rounded-[2rem] border border-[#CDAE86] translate-x-5 translate-y-5" />
 
-            <div className="relative rounded-[2rem] h-[620px] w-full shadow-2xl bg-[#DCC9AA] flex items-center justify-center overflow-hidden">
+            <div className="relative rounded-[2rem] h-[620px] w-full shadow-2xl bg-[#DCC9AA] dark:bg-[#1E1712] flex items-center justify-center overflow-hidden">
               <div className="text-center px-10">
                 <div className="uppercase tracking-[0.35em] text-xs text-[#8A674F] mb-4">
                   Hero Artwork Placeholder
