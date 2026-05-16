@@ -3,16 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  html,
   body {
-    background: #f0e7d3;
-    color: #2b1d16;
+    min-height: 100%;
+  }
+
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: #F4EBDC;
+    color: #2B1D16;
     font-family: Inter, sans-serif;
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease;
   }
 
   @media (prefers-color-scheme: dark) {
     body {
-      background: #0f0b08;
-      color: #f5ecde;
+      background-color: #0F0B08;
+      color: #F5ECDE;
     }
   }
 
