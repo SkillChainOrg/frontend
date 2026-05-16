@@ -86,8 +86,14 @@ export default function LandingPage() {
               {t("landing_badge")}
             </div>
 
-            <h1 className="font-serif text-[5rem] md:text-[7rem] leading-[0.9] tracking-[-0.04em] mb-8 text-[#2B1D16] dark:text-[#F5ECDE]">
-              SkillChain
+            <h1
+              className={`font-serif ${
+                i18n.language === "hi"
+                  ? "tracking-normal"
+                  : "tracking-tight"
+              }`}
+            >
+              {t("brand_name")}
             </h1>
 
             <div className="w-24 h-[1px] bg-[#B56A3E] mb-8" />

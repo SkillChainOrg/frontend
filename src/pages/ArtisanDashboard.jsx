@@ -133,8 +133,8 @@ export const ArtisanDashboard = () => {
 
   if (!registered) {
     return (
-     <div className="min-h-screen bg-[#F4EBDC]">
-        <section className="relative px-6 pt-28 pb-20 border-b border-[#d8c7ab] overflow-hidden">
+     <div className="min-h-screen bg-[#F0E7D3] dark:bg-[#0F0B08] text-[#2B1D16] dark:text-[#F5ECDE] transition-colors duration-500">
+        <section className="relative px-6 pt-28 pb-20 border-b border-[#d8c7ab] dark:border-[#2e241d] overflow-hidden">
           <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/old-map.png')]" />
           <div className="absolute top-[-140px] left-[-120px] w-[420px] h-[420px] rounded-full bg-[#D8B38A]/20 blur-3xl" />
           <div className="absolute bottom-[-160px] right-[-120px] w-[520px] h-[520px] rounded-full bg-[#A85B34]/10 blur-3xl" />
@@ -160,7 +160,7 @@ export const ArtisanDashboard = () => {
 
               <div className="w-28 h-[1px] bg-[#B56A3E] mb-8" />
 
-              <p className="text-xl leading-relaxed text-[#5C4636] max-w-2xl mb-10">
+              <p className="text-xl leading-relaxed text-[#5C4636] dark:text-[#CBB9A6] max-w-2xl mb-10">
                 {t("artisan_intro")}
               </p>
 
@@ -173,7 +173,7 @@ export const ArtisanDashboard = () => {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="px-4 py-2 border border-[#c8b296] rounded-full text-sm tracking-wide bg-[#fffaf1]/65 backdrop-blur-sm"
+                    className="px-4 py-2 border border-[#c8b296] dark:border-[#2e241d] rounded-full text-sm tracking-wide bg-[#fffaf1]/65 dark:bg-[#16110D]/80 backdrop-blur-sm"
                   >
                     {item}
                   </div>
@@ -187,7 +187,7 @@ export const ArtisanDashboard = () => {
               transition={{ duration: 0.95 }}
               className="relative"
             >
-              <div className="relative bg-[#E8D9BE] border border-[#d3bea0] shadow-2xl p-8 md:p-10 overflow-hidden">
+              <div className="relative bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-2xl p-8 md:p-10 overflow-hidden">
                 <div className="absolute inset-0 opacity-[0.04] bg-[url('https://www.transparenttextures.com/patterns/paper-fibers.png')]" />
 
                 <div className="relative z-10">
@@ -231,7 +231,7 @@ export const ArtisanDashboard = () => {
                     ].map((item) => (
                       <div
                         key={item.label}
-                        className="flex items-center justify-between border-b border-[#d5c4a7] pb-4"
+                        className="flex items-center justify-between border-b border-[#d5c4a7] dark:border-[#2e241d] pb-4"
                       >
                         <div className="flex items-center gap-4">
                           <item.icon className="text-[#B56A3E]" size={18} />
@@ -239,7 +239,7 @@ export const ArtisanDashboard = () => {
                             <div className="text-xs uppercase tracking-[0.2em] text-[#8B694D]">
                               {item.label}
                             </div>
-                            <div className="text-[#2B1D16] mt-1">{item.value}</div>
+                            <div className="text-[#2B1D16] dark:text-[#F5ECDE] mt-1">{item.value}</div>
                           </div>
                         </div>
 
@@ -259,13 +259,13 @@ export const ArtisanDashboard = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10"
+              className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10"
             >
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                 {t("artisan_registration_form")}
               </div>
               <h2 className="font-serif text-4xl mb-4">{t("artisan_registration_heading")}</h2>
-              <p className="text-[#5C4636] leading-relaxed mb-8 max-w-2xl">
+              <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed mb-8 max-w-2xl">
                 {t("artisan_registration_body")}
               </p>
 
@@ -275,7 +275,7 @@ export const ArtisanDashboard = () => {
                     {t("artisan_name")}
                   </label>
                   <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -289,7 +289,7 @@ export const ArtisanDashboard = () => {
                       {t("artisan_craft_tradition")}
                     </label>
                     <input
-                      className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                      className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                       required
                       value={form.craft_type}
                       onChange={(e) => setForm({ ...form, craft_type: e.target.value })}
@@ -302,7 +302,7 @@ export const ArtisanDashboard = () => {
                       {t("artisan_cluster")}
                     </label>
                     <input
-                      className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                      className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                       required
                       value={form.cluster}
                       onChange={(e) => setForm({ ...form, cluster: e.target.value })}
@@ -316,7 +316,7 @@ export const ArtisanDashboard = () => {
                     {t("artisan_place_of_practice")}
                   </label>
                   <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                     required
                     value={form.location}
                     onChange={(e) => setForm({ ...form, location: e.target.value })}
@@ -340,13 +340,13 @@ export const ArtisanDashboard = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8"
+                className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8"
               >
                 <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                   {t("artisan_did_identity")}
                 </div>
                 <h3 className="font-serif text-3xl mb-4">{t("artisan_did_heading")}</h3>
-                <p className="text-[#5C4636] leading-relaxed">
+                <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed">
                   {t("artisan_did_body")}
                 </p>
               </motion.div>
@@ -355,12 +355,12 @@ export const ArtisanDashboard = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8"
+                className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8"
               >
                 <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                   {t("artisan_provenance_ownership")}
                 </div>
-                <p className="text-[#5C4636] leading-relaxed">
+                <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed">
                   {t("artisan_provenance_body")}
                 </p>
               </motion.div>
@@ -370,7 +370,7 @@ export const ArtisanDashboard = () => {
 
         <section className="px-6 pb-20">
           <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
-            <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+            <div className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                 {t("artisan_trust_indicators")}
               </div>
@@ -380,21 +380,21 @@ export const ArtisanDashboard = () => {
                 {trustPillars.map((item) => (
                   <div
                     key={item.title}
-                    className="flex items-start gap-4 border-b border-[#d9c7ac] pb-4"
+                    className="flex items-start gap-4 border-b border-[#d9c7ac] dark:border-[#2e241d] pb-4"
                   >
                     <div className="w-11 h-11 rounded-full border border-[#B56A3E]/30 flex items-center justify-center shrink-0">
                       <item.icon className="text-[#B56A3E]" size={18} />
                     </div>
                     <div>
                       <div className="font-medium text-lg mb-1">{item.title}</div>
-                      <p className="text-[#5C4636] leading-relaxed">{item.detail}</p>
+                      <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed">{item.detail}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+            <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                 {t("artisan_next_label")}
               </div>
@@ -408,13 +408,13 @@ export const ArtisanDashboard = () => {
                         <step.icon size={18} />
                       </div>
                       {index < steps.length - 1 && (
-                        <div className="w-px flex-1 bg-[#d8c7ab] mt-3" />
+                        <div className="w-px flex-1 bg-[#d8c7ab] dark:bg-[#2e241d] mt-3" />
                       )}
                     </div>
 
                     <div className="pt-1 pb-3">
                       <div className="font-medium text-lg mb-1">{step.title}</div>
-                      <p className="text-[#5C4636] leading-relaxed">{step.detail}</p>
+                      <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed">{step.detail}</p>
                     </div>
                   </div>
                 ))}
@@ -424,12 +424,12 @@ export const ArtisanDashboard = () => {
         </section>
 
         <section className="px-6 pb-24">
-          <div className="max-w-7xl mx-auto bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+          <div className="max-w-7xl mx-auto bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
             <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
               {t("artisan_institutional_references")}
             </div>
             <h3 className="font-serif text-3xl mb-4">{t("artisan_institutional_heading")}</h3>
-            <p className="text-[#5C4636] max-w-4xl leading-relaxed">
+            <p className="text-[#5C4636] dark:text-[#CBB9A6] max-w-4xl leading-relaxed">
               {t("artisan_institutional_body")}
             </p>
           </div>
@@ -439,24 +439,24 @@ export const ArtisanDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F0E7D3] text-[#2B1D16] px-6 py-12">
+    <div className="min-h-screen bg-[#F0E7D3] dark:bg-[#0F0B08] text-[#2B1D16] dark:text-[#F5ECDE] transition-colors duration-500 px-6 py-12">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-3 gap-6 mb-10">
-          <div className="md:col-span-2 bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+          <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
             <div className="flex items-center gap-3 mb-5">
               <Fingerprint className="text-[#B56A3E]" size={24} />
               <h2 className="text-3xl font-serif">Artisan Registry Record</h2>
               <StatusBadge status="pending" text="Pending Review" />
             </div>
 
-            <p className="text-[#5C4636] leading-relaxed mb-6 max-w-2xl">
+            <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed mb-6 max-w-2xl">
               The artisan identity has been entered into the registry and is now
               awaiting institutional approval before a DID and provenance-ready trust
               record are fully activated.
             </p>
 
             <div className="space-y-4">
-              <div className="flex items-center gap-3 p-4 bg-[#fffaf1] border border-[#d8c6aa]">
+              <div className="flex items-center gap-3 p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                 <Clock3 className="text-[#B56A3E]" size={18} />
                 <span className="text-sm uppercase tracking-[0.18em] text-[#8B694D] w-28">
                   Status
@@ -465,28 +465,28 @@ export const ArtisanDashboard = () => {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="p-4 bg-[#fffaf1] border border-[#d8c6aa]">
+                <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                   <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
                     Artisan Name
                   </div>
                   <div className="text-lg font-medium">{artisan.name}</div>
                 </div>
 
-                <div className="p-4 bg-[#fffaf1] border border-[#d8c6aa]">
+                <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                   <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
                     Craft Tradition
                   </div>
                   <div className="text-lg font-medium">{artisan.craft_type}</div>
                 </div>
 
-                <div className="p-4 bg-[#fffaf1] border border-[#d8c6aa]">
+                <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                   <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
                     Cluster / Guild
                   </div>
                   <div className="text-lg font-medium">{artisan.cluster}</div>
                 </div>
 
-                <div className="p-4 bg-[#fffaf1] border border-[#d8c6aa]">
+                <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                   <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
                     Place of Practice
                   </div>
@@ -495,7 +495,7 @@ export const ArtisanDashboard = () => {
               </div>
 
               {artisan.artisan_id && (
-                <div className="flex items-center gap-3 p-4 bg-[#fffaf1] border border-[#d8c6aa]">
+                <div className="flex items-center gap-3 p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                   <span className="text-sm uppercase tracking-[0.18em] text-[#8B694D] w-28">
                     Registry ID
                   </span>
@@ -506,23 +506,23 @@ export const ArtisanDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col justify-between">
+          <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col justify-between">
             <div>
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
                 Registry Note
               </div>
               <h3 className="font-serif text-3xl mb-4">Identity is issued after review</h3>
-              <p className="text-[#5C4636] leading-relaxed">
+              <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed">
                 Once approved, this artisan record will receive a DID, a wallet-backed
                 trust identity, and the ability to anchor artworks as verified works of origin.
               </p>
             </div>
 
-            <div className="mt-8 p-5 border border-[#d5c4a7] bg-[#f5ebdd]">
+            <div className="mt-8 p-5 border border-[#d5c4a7] dark:border-[#2e241d] bg-[#f5ebdd] dark:bg-[#1A1410]">
               <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-2">
                 Approval prepares
               </div>
-              <div className="space-y-2 text-[#5C4636]">
+              <div className="space-y-2 text-[#5C4636] dark:text-[#CBB9A6]">
                 <div>DID identity issuance</div>
                 <div>Creator-authored provenance records</div>
                 <div>Blockchain-linked authenticity</div>
@@ -534,7 +534,7 @@ export const ArtisanDashboard = () => {
         {artisan.did ? (
           <>
             <div className="grid md:grid-cols-3 gap-6 mb-10">
-              <div className="md:col-span-2 bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+              <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
                 <div className="flex items-center gap-3 mb-4">
                   <Fingerprint className="text-[#B56A3E]" size={24} />
                   <h2 className="text-2xl font-serif">Verified Identity</h2>
@@ -542,7 +542,7 @@ export const ArtisanDashboard = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-[#fffaf1] border border-[#d8c6aa]">
+                  <div className="flex items-center gap-3 p-3 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                     <span className="text-sm text-[#8B694D] w-20">DID</span>
                     <code className="flex-1 font-mono text-sm truncate">{artisan.did}</code>
                     <CopyButton text={artisan.did} label="DID" />
@@ -550,8 +550,8 @@ export const ArtisanDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-[#E8D9BE] border border-[#d3bea0] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col items-center justify-center">
-                <div className="p-3 bg-white shadow-sm">
+              <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col items-center justify-center">
+                <div className="p-3 bg-white dark:bg-[#1A1410] shadow-sm">
                   <QRCodeSVG value={`http://localhost:5173/verify?did=${artisan.did}`} size={160} level="H" />
                 </div>
                 <p className="text-xs text-[#8B694D] mt-4 text-center uppercase tracking-[0.18em]">
@@ -560,7 +560,7 @@ export const ArtisanDashboard = () => {
               </div>
             </div>
 
-            <div className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10">
+            <div className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10">
               <h3 className="text-2xl font-serif mb-5 flex items-center gap-2">
                 <ImagePlus size={20} className="text-[#B56A3E]" /> Register Artwork Provenance
               </h3>
@@ -575,14 +575,14 @@ export const ArtisanDashboard = () => {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                     placeholder="Artwork title"
                     required
                     value={artworkForm.title}
                     onChange={(e) => setArtworkForm({ ...artworkForm, title: e.target.value })}
                   />
                   <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                     placeholder="Materials used"
                     value={artworkForm.materials}
                     onChange={(e) => setArtworkForm({ ...artworkForm, materials: e.target.value })}
@@ -590,7 +590,7 @@ export const ArtisanDashboard = () => {
                 </div>
 
                 <textarea
-                  className="w-full px-4 py-4 border border-[#cfb99d] bg-[#fffaf1] outline-none focus:border-[#B56A3E] transition"
+                  className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
                   rows={4}
                   placeholder="Describe the work, its process, and its cultural significance..."
                   value={artworkForm.description}
@@ -616,7 +616,7 @@ export const ArtisanDashboard = () => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    className="bg-[#F7F0E1]/85 border border-[#d8c6aa] shadow-[0_10px_50px_rgba(0,0,0,0.08)] overflow-hidden"
+                    className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] overflow-hidden"
                   >
                     <div className="aspect-square bg-[#eadcc5] relative overflow-hidden">
                       {art.image_url ? (
@@ -629,7 +629,7 @@ export const ArtisanDashboard = () => {
                     </div>
                     <div className="p-5">
                       <h4 className="font-serif text-xl mb-1">{art.title}</h4>
-                      <p className="text-sm text-[#6D5646] line-clamp-2 mb-3">{art.description}</p>
+                      <p className="text-sm text-[#6D5646] dark:text-[#CBB9A6] line-clamp-2 mb-3">{art.description}</p>
 
                       {art.artwork_id ? (
                         <Link
@@ -639,19 +639,19 @@ export const ArtisanDashboard = () => {
                           View Provenance Object
                         </Link>
                       ) : (
-                        <div className="w-full mb-4 text-xs text-[#8B694D] p-3 bg-[#fffaf1] border border-[#d8c6aa]">
+                        <div className="w-full mb-4 text-xs text-[#8B694D] p-3 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                           This work is missing an internal id. Re-register to enable collector acquisition.
                         </div>
                       )}
 
                       <div className="space-y-2 text-xs">
-                        <div className="flex items-center justify-between p-2 bg-[#fffaf1] border border-[#d8c6aa]">
+                        <div className="flex items-center justify-between p-2 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                           <span className="text-[#8B694D]">IPFS CID</span>
                           <div className="flex items-center gap-1 font-mono">
                             {art.ipfs_cid?.slice(0, 12)}... <CopyButton text={art.ipfs_cid} />
                           </div>
                         </div>
-                        <div className="flex items-center justify-between p-2 bg-[#fffaf1] border border-[#d8c6aa]">
+                        <div className="flex items-center justify-between p-2 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                           <span className="text-[#8B694D]">Txn ID</span>
                           <a
                             href={`https://algoexplorer.io/tx/${art.txn_id}`}
@@ -669,7 +669,7 @@ export const ArtisanDashboard = () => {
               </AnimatePresence>
 
               {(artisan.artworks || []).length === 0 && (
-                <div className="col-span-full text-center py-12 text-[#8B694D] bg-[#F7F0E1]/85 border border-dashed border-[#d8c6aa]">
+                <div className="col-span-full text-center py-12 text-[#8B694D] bg-[#F7EFE1] dark:bg-[#16110D] border border-dashed border-[#d8c7ab] dark:border-[#2e241d]">
                   No artworks registered yet. Once approved, add the first work to this artisan identity.
                 </div>
               )}
