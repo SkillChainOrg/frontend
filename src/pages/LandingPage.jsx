@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Shield, ChevronDown } from "lucide-react";
 
 export default function LandingPage() {
   const [showNavbar, setShowNavbar] = useState(false);
+  const [entered, setEntered] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowNavbar(window.scrollY > 120);
+      setShowNavbar(window.scrollY > 40);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -16,14 +17,47 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  if (!entered) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] bg-[#0B0806] flex items-center justify-center"
+        >
+          <div className="text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="font-serif text-7xl md:text-8xl text-[#F0E7D3] tracking-[-0.04em] mb-10"
+            >
+              SkillChain
+            </motion.h1>
+
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              onClick={() => setEntered(true)}
+              className="uppercase tracking-[0.35em] text-xs text-[#D8B38A] border border-[#3E2D20] px-8 py-4 hover:bg-[#17110d] transition"
+            >
+              Click to Enter
+            </motion.button>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
   return (
     <div className="bg-[#F0E7D3] text-[#2B1D16] overflow-hidden">
       {/* ================= NAVBAR ================= */}
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{
-          y: showNavbar ? 0 : -100,
-          opacity: showNavbar ? 1 : 0,
+          y: showNavbar ? 0 : -20,
+          opacity: showNavbar ? 1 : 0.92,
         }}
         transition={{ duration: 0.5 }}
         className="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[#F0E7D3]/80 border-b border-[#d8c7ab]"
@@ -33,16 +67,32 @@ export default function LandingPage() {
             SkillChain
           </h2>
 
-          <div className="flex items-center gap-10 text-sm tracking-wide">
-            <Link to="/verify" className="hover:text-[#B56A3E] transition">
+          <div className="flex items-center gap-10 text-sm tracking-[0.18em] uppercase">
+            <Link
+              to="/verify"
+              className="hover:text-[#B56A3E] transition"
+            >
               Verify
             </Link>
 
-            <Link to="/artisan" className="hover:text-[#B56A3E] transition">
+            <Link
+              to="/artworks"
+              className="hover:text-[#B56A3E] transition"
+            >
+              Artworks
+            </Link>
+
+            <Link
+              to="/artisan"
+              className="hover:text-[#B56A3E] transition"
+            >
               Artisans
             </Link>
 
-            <Link to="/institution" className="hover:text-[#B56A3E] transition">
+            <Link
+              to="/institutions"
+              className="hover:text-[#B56A3E] transition"
+            >
               Institutions
             </Link>
           </div>
@@ -125,6 +175,7 @@ export default function LandingPage() {
                     <div className="text-xs uppercase tracking-[0.2em] mb-1 opacity-70">
                       Artwork ID
                     </div>
+
                     <div className="font-mono text-sm">
                       SKC-7F3A-9B21
                     </div>
@@ -134,6 +185,7 @@ export default function LandingPage() {
                     <div className="text-xs uppercase tracking-[0.2em] mb-1 opacity-70">
                       DID
                     </div>
+
                     <div className="font-mono text-sm break-all">
                       did:pkh:algo:artisan-13k8f7w
                     </div>
@@ -143,6 +195,7 @@ export default function LandingPage() {
                     <div className="text-xs uppercase tracking-[0.2em] mb-1 opacity-70">
                       Provenance
                     </div>
+
                     <div className="text-sm">
                       Anchored on Algorand & stored on IPFS
                     </div>
@@ -208,18 +261,25 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* RIGHT IMAGE */}
+          {/* RIGHT IMAGE PLACEHOLDER */}
           <div className="relative">
             <div className="absolute inset-0 rounded-[2rem] border border-[#CDAE86] translate-x-5 translate-y-5" />
 
-            <img
-              src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=1200&auto=format&fit=crop"
-              alt="artisan"
-              className="relative rounded-[2rem] object-cover h-[620px] w-full shadow-2xl"
-            />
+            <div className="relative rounded-[2rem] h-[620px] w-full shadow-2xl bg-[#DCC9AA] flex items-center justify-center overflow-hidden">
+              <div className="text-center px-10">
+                <div className="uppercase tracking-[0.35em] text-xs text-[#8A674F] mb-4">
+                  Hero Artwork Placeholder
+                </div>
+
+                <div className="font-serif text-4xl text-[#6F5748]">
+                  Add Your Image Here
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
     </div>
+    
   );
 }

@@ -8,7 +8,8 @@ import { ArtworkDetailPage } from "./pages/ArtworkDetailPage";
 
 import { ArtisanSearchPage } from "./pages/ArtisanSearchPage";
 import { ArtisanDetailPage } from "./pages/ArtisanDetailPage";
-
+import  InstitutionsPage   from "./pages/InstitutionsPage";
+import  ArtworksPage      from "./pages/ArtworksPage";
 // Recommended upcoming pages
 //import { ProvenanceExplorerPage } from "./pages/ProvenanceExplorerPage";
 //import { InfrastructureStatusPage } from "./pages/InfrastructureStatusPage";
@@ -33,6 +34,16 @@ function App() {
         <Route
           path="/artworks/:artworkId"
           element={<ArtworkDetailPage />}
+        />
+
+        <Route
+          path="/institutions"
+          element={<InstitutionsPage />}
+        />
+
+        <Route
+          path="/artworks"
+          element={<ArtworksPage />}
         />
 
         {/* ─────────────────────────────────────
