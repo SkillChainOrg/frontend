@@ -15,17 +15,6 @@ export default function LandingPage() {
     t("landing_mission_point_3"),
     t("landing_mission_point_4"),
   ];
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowNavbar(window.scrollY > 40);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   if (!entered) {
     return (
       <AnimatePresence>
