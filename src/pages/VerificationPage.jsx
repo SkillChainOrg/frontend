@@ -92,17 +92,26 @@ export const VerificationPage = () => {
 
       const normalized = normalizeResult({
         verified: true,
-        artisan: data.artisan,
+
+        artisan: data.artisan_name || "Verified Artisan",
+        artisan_name: data.artisan_name || "Verified Artisan",
+
         artisan_did: data.artisan_did,
+
         tx_id: data.tx_id,
         ipfs_cid: data.ipfs_cid,
         explorer_url: data.explorer_url,
+
         issued_at: data.created_at,
+
         doc_type: "Registered cultural artifact",
+
         trust_grade: "A",
         trust_score: "Verified",
+
         signature_valid: true,
         hmac_valid: true,
+
         ...data,
       });
 
