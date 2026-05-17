@@ -349,18 +349,25 @@ export default function ArtifactRegistrationPage() {
                 </div>
 
                 <div>
-                  <strong>Blockchain Transaction:</strong>
+                  <div>
+                    <strong>Blockchain Transaction:</strong>
 
-                  <div className="font-mono break-all">
-                    {result.algorand_tx_id || 'Pending'}
-                  </div>
-                </div>
-
-                <div>
-                  <strong>IPFS CID:</strong>
-
-                  <div className="font-mono break-all">
-                    {result.ipfs_cid || 'Pending'}
+                    {result.explorer_url ? (
+                      <div className="mt-1">
+                        <a
+                          href={result.explorer_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#B56A3E] underline break-all"
+                        >
+                          View Verified Blockchain Record
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="font-mono break-all">
+                        Pending
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
