@@ -83,9 +83,13 @@ export const verifyPayment = ({ razorpay_order_id, razorpay_payment_id, razorpay
 export const getPendingArtisans = () => api.get('/admin/artisans/pending');
 export const approveArtisan = (id) => api.post(`/admin/approve-artisan/${id}`);
 export const rejectArtisan = (id) => api.post(`/admin/reject-artisan/${id}`);
+// Artwork marketplace detail
 export const getArtwork = (artworkId) =>
-  api.get(`/artwork-verification/${artworkId}`)
+  api.get(`/artwork/${artworkId}`);
 
+// QR provenance verification
+export const getArtworkVerification = (artworkId) =>
+  api.get(`/artwork-verification/${artworkId}`);
 // DigiLocker
 export const startDigiLocker = () => api.post('/digilocker/start');
 export const verifyDigiLocker = () => api.post('/digilocker/verify');

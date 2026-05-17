@@ -88,7 +88,7 @@ export const VerificationPage = () => {
     try {
       setLoading(true);
 
-      const { data } = await api.getArtwork(artworkId);
+      const { data } = await api.getArtworkVerification(artworkId);
 
       const normalized = normalizeResult({
         verified: true,
