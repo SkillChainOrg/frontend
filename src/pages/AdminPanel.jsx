@@ -58,7 +58,12 @@ export const AdminPanel = () => {
         )
       addToast('Artisan approved successfully', 'success');
     } catch (err) {
-      addToast('Approval failed', 'error');
+      console.error(err);
+
+      addToast(
+        err?.message || 'Approval failed',
+        'error'
+      );
     }
   };
 
