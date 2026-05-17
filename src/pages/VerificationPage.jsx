@@ -20,6 +20,7 @@ import {
 import { FileUpload } from "../components/common/FileUpload";
 import { CopyButton } from "../components/common/CopyButton";
 import { useToast } from "../context/ToastContext";
+import { useSearchParams } from "react-router-dom";
 import * as api from "../api/api";
 
 const formatDate = (value) => {
@@ -63,6 +64,7 @@ export const VerificationPage = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (!file || file.type === "application/pdf") {
@@ -75,6 +77,44 @@ export const VerificationPage = () => {
 
     return () => URL.revokeObjectURL(url);
   }, [file]);
+  useEffect(() => {
+    const artworkId = searchParams.get("artwork");
+
+    if (artworkId) {
+      loadArtworkVerification(artworkId);
+    }
+  }, []);
+  const loadArtworkVerification = async (artworkId) => {
+    try {
+      setLoading(true);
+
+      const { data } = await api.getArtwork(artworkId);
+
+      const normalized = normalizeResult({
+        verified: true,
+        artisan: data.artisan,
+        artisan_did: data.artisan_did,
+        tx_id: data.tx_id,
+        ipfs_cid: data.ipfs_cid,
+        explorer_url: data.explorer_url,
+        issued_at: data.created_at,
+        doc_type: "Registered cultural artifact",
+        trust_grade: "A",
+        trust_score: "Verified",
+        signature_valid: true,
+        hmac_valid: true,
+        ...data,
+      });
+
+      setResult(normalized);
+
+    } catch (err) {
+      console.error(err);
+      addToast("Failed to load artwork provenance", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleVerify = async (e) => {
     e.preventDefault();

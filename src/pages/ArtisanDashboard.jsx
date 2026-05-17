@@ -693,7 +693,11 @@ export const ArtisanDashboard = () => {
 
               <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col items-center justify-center">
                 <div className="p-3 bg-white dark:bg-[#1A1410] shadow-sm">
-                  <QRCodeSVG value={`http://localhost:5173/verify?did=${artisan.did}`} size={160} level="H" />
+                  <QRCodeSVG
+                    value={`${window.location.origin}/verify?artwork=${result.artwork_id}`}
+                    size={160}
+                    level="H"
+                  />
                 </div>
                 <p className="text-xs text-[#8B694D] mt-4 text-center uppercase tracking-[0.18em]">
                   Scan to verify identity

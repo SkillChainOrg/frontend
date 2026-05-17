@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { addArtwork } from "../api/api";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function ArtifactRegistrationPage() {
   const location = useLocation();
@@ -133,29 +134,6 @@ export default function ArtifactRegistrationPage() {
             Verified artisans can register artworks with identity-backed
             provenance anchored to decentralized infrastructure.
           </p>
-          <div className="border border-[#D9C8B5] bg-white rounded-2xl p-6 shadow-sm mb-8">
-
-            <h2 className="text-2xl font-serif mb-4">
-              Resolve Artisan DID
-            </h2>
-
-            <div className="flex gap-3">
-
-              <input
-                value={lookupDid}
-                onChange={(e) => setLookupDid(e.target.value)}
-                placeholder="Enter approved artisan DID"
-                className="flex-1 border border-[#D9C8B5] rounded-xl px-4 py-3"
-              />
-
-              <button
-                onClick={handleResolveDid}
-                className="px-5 py-3 bg-[#B56A3E] text-white rounded-xl"
-              >
-                {resolving ? 'Resolving...' : 'Resolve'}
-              </button>
-            </div>
-          </div>
 
           <div className="border border-[#D9C8B5] bg-white rounded-2xl p-6 space-y-4 shadow-sm">
             <h2 className="text-xl font-semibold">
@@ -369,6 +347,19 @@ export default function ArtifactRegistrationPage() {
                       </div>
                     )}
                   </div>
+                </div>
+                <div className="mt-8 flex flex-col items-center">
+                  <div className="p-3 bg-white border border-[#d8c7ab] rounded-xl">
+                    <QRCodeSVG
+                      value={`${window.location.origin}/verify?artwork=${result.artwork_id}`}
+                      size={180}
+                      level="H"
+                    />
+                  </div>
+
+                  <p className="text-xs text-[#8B694D] mt-4 text-center uppercase tracking-[0.18em]">
+                    Scan to verify provenance
+                  </p>
                 </div>
               </div>
             </div>
