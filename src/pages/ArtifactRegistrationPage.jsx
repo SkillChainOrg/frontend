@@ -1,27 +1,13 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { addArtwork } from '../services/api';
+import { addArtwork } from "../api/api";
 
 export default function ArtifactRegistrationPage() {
   const location = useLocation();
-
-  const artisan = location.state?.artisan || null;
-  if (!artisan) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F6EFE5]">
-      <div className="bg-white border border-[#D9C8B5] p-8 rounded-2xl shadow-sm max-w-lg text-center">
-        <h2 className="text-2xl font-serif mb-4">
-          Verified Identity Required
-        </h2>
-
-        <p className="text-[#5E5147]">
-          Artifact registration is only available after DID issuance and artisan approval.
-        </p>
-      </div>
-    </div>
-  );
-}
-
+  const artisanFromState = location.state?.artisan || null;
+  const [lookupDid, setLookupDid] = useState('');
+  const [artisan, setArtisan] = useState(artisanFromState);
+  const [resolving, setResolving] = useState(false);
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -31,6 +17,32 @@ export default function ArtifactRegistrationPage() {
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const handleResolveDid = async () => {
+    try {
+      if (!lookupDid) return;
+
+      setResolving(true);
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/artisan/${encodeURIComponent(lookupDid)}`
+      );
+
+      if (!response.ok) {
+        throw new Error('DID not found');
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+      setArtisan(data);
+
+    } catch (err) {
+      console.error(err);
+      alert('Failed to resolve DID');
+    } finally {
+      setResolving(false);
+    }
+  };
 
   const handleRegisterArtifact = async () => {
     try {
@@ -76,6 +88,34 @@ export default function ArtifactRegistrationPage() {
     <div className="min-h-screen bg-[#F6EFE5] text-[#1F1A17] px-6 py-12">
       <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-10">
 
+      {/* DID RESOLVE PANEL */}
+      <div className="border border-[#D9C8B5] bg-white rounded-2xl p-6 shadow-sm mb-8 lg:col-span-2">
+
+        <h2 className="text-2xl font-serif mb-4">
+          Resolve Artisan DID
+        </h2>
+
+        <div className="flex gap-3">
+
+          <input
+            value={lookupDid}
+            onChange={(e) => setLookupDid(e.target.value)}
+            placeholder="Enter approved artisan DID"
+            className="flex-1 border border-[#D9C8B5] rounded-xl px-4 py-3"
+          />
+
+          <button
+            onClick={handleResolveDid}
+            className="px-5 py-3 bg-[#B56A3E] text-white rounded-xl"
+          >
+            {resolving ? 'Resolving...' : 'Resolve'}
+          </button>
+        </div>
+      </div>
+
+      {artisan && (
+        <>
+
         {/* LEFT PANEL */}
         <div className="space-y-6">
 
@@ -93,6 +133,29 @@ export default function ArtifactRegistrationPage() {
             Verified artisans can register artworks with identity-backed
             provenance anchored to decentralized infrastructure.
           </p>
+          <div className="border border-[#D9C8B5] bg-white rounded-2xl p-6 shadow-sm mb-8">
+
+            <h2 className="text-2xl font-serif mb-4">
+              Resolve Artisan DID
+            </h2>
+
+            <div className="flex gap-3">
+
+              <input
+                value={lookupDid}
+                onChange={(e) => setLookupDid(e.target.value)}
+                placeholder="Enter approved artisan DID"
+                className="flex-1 border border-[#D9C8B5] rounded-xl px-4 py-3"
+              />
+
+              <button
+                onClick={handleResolveDid}
+                className="px-5 py-3 bg-[#B56A3E] text-white rounded-xl"
+              >
+                {resolving ? 'Resolving...' : 'Resolve'}
+              </button>
+            </div>
+          </div>
 
           <div className="border border-[#D9C8B5] bg-white rounded-2xl p-6 space-y-4 shadow-sm">
             <h2 className="text-xl font-semibold">
@@ -304,6 +367,8 @@ export default function ArtifactRegistrationPage() {
             </div>
           )}
         </div>
+        </>
+        )}
       </div>
     </div>
   );
