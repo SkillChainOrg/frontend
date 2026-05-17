@@ -11,6 +11,7 @@ export const AdminPanel = () => {
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
 
+
   const saveKey = (key) => {
     localStorage.setItem('admin_key', key);
     setAdminKey(key);
@@ -60,7 +61,7 @@ export const AdminPanel = () => {
       addToast('Approval failed', 'error');
     }
   };
-  const { data } = await api.approveArtisan(id);
+
   const handleReject = async (id) => {
     try {
       await api.rejectArtisan(id);

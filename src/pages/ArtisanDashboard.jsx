@@ -127,22 +127,7 @@ export const ArtisanDashboard = () => {
       setLoading(false);
     }
   };
-  const refreshArtisanStatus = async () => {
-    try {
-      const { data } = await api.getArtisan(artisan.did);
 
-      setArtisan((prev) => ({
-        ...prev,
-        ...data,
-      }));
-
-      addToast("Identity updated from registry", "success");
-
-    } catch (err) {
-      console.error(err);
-      addToast("Identity still pending approval", "error");
-    }
-  };
   const handleLookup = async () => {
     try {
       const { data } = await api.getArtisan(lookupDid);
