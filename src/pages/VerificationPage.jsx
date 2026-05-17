@@ -93,8 +93,8 @@ export const VerificationPage = () => {
       const normalized = normalizeResult({
         verified: true,
 
-        artisan: data.artisan_name || "Verified Artisan",
-        artisan_name: data.artisan_name || "Verified Artisan",
+        artisan: "Verified Artisan",
+        artisan_name: "Verified Artisan",
 
         artisan_did: data.artisan_did,
 
