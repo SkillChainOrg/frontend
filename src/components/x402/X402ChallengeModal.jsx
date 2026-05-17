@@ -157,7 +157,7 @@ export const X402ChallengeModal = ({
 
     // REAL acquisition request
     const response = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/x402/acquire`,
+      `${import.meta.env.VITE_API_URL}/x402/acquire`,
       {
         method: "POST",
         headers: {
