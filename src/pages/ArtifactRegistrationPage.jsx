@@ -350,6 +350,7 @@ export default function ArtifactRegistrationPage() {
                 </div>
                 <div className="mt-8 flex flex-col items-center">
                   <div className="p-3 bg-white border border-[#d8c7ab] rounded-xl">
+                    {console.log(`${window.location.origin}/verify?artwork=${result.artwork_id}`)}
                     <QRCodeSVG
                       value={`${window.location.origin}/verify?artwork=${result.artwork_id}`}
                       size={180}

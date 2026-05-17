@@ -84,6 +84,8 @@ export const getArtwork = (artworkId) => api.get(`/artwork/${artworkId}`);
 export const getPendingArtisans = () => api.get('/admin/artisans/pending');
 export const approveArtisan = (id) => api.post(`/admin/approve-artisan/${id}`);
 export const rejectArtisan = (id) => api.post(`/admin/reject-artisan/${id}`);
+export const getArtwork = (artworkId) =>
+  api.get(`/artwork-verification/${artworkId}`)
 
 // DigiLocker
 export const startDigiLocker = () => api.post('/digilocker/start');
