@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { useNavigate } from 'react-router-dom';
 
 import { FileUpload } from "../components/common/FileUpload";
 import { CopyButton } from "../components/common/CopyButton";
@@ -31,7 +32,9 @@ export const ArtisanDashboard = () => {
   const [didDocument, setDidDocument] = useState(null);
   const [loadingDid, setLoadingDid] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [artisan, setArtisan] = useState(null);
+  
   const refreshArtisanStatus = async () => {
     try {
       if (!artisan?.artisan_id) {
@@ -537,6 +540,7 @@ export const ArtisanDashboard = () => {
                 Check Approval Status
               </button>
 
+
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                   <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
@@ -646,7 +650,6 @@ export const ArtisanDashboard = () => {
                   <h2 className="text-2xl font-serif">Verified Identity</h2>
                   <StatusBadge status="verified" text="Approved" />
                 </div>
-
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 p-3 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
                     <span className="text-sm text-[#8B694D] w-20">DID</span>
@@ -659,6 +662,16 @@ export const ArtisanDashboard = () => {
                   </div>
 
                   <div className="flex flex-wrap gap-4">
+                    <button
+                      onClick={() =>
+                        navigate('/register-artifact', {
+                          state: { artisan },
+                        })
+                      }
+                      className="mt-6 px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"
+                    >
+                      Register Artifact
+                    </button>
                     <button
                       onClick={handleResolveDid}
                       className="px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"

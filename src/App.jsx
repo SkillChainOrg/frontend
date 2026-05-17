@@ -12,6 +12,7 @@ import { ArtisanDetailPage } from "./pages/ArtisanDetailPage";
 import  InstitutionsPage   from "./pages/InstitutionsPage";
 import  ArtworksPage      from "./pages/ArtworksPage";
 import Navbar from "./components/Navbar";
+import ArtifactRegistrationPage  from './pages/ArtifactRegistrationPage';
 // Recommended upcoming pages
 //import { ProvenanceExplorerPage } from "./pages/ProvenanceExplorerPage";
 //import { InfrastructureStatusPage } from "./pages/InfrastructureStatusPage";
@@ -62,7 +63,10 @@ function App() {
           path="/artisans/:artisanId"
           element={<ArtisanDetailPage />}
         />
-        
+        <Route
+          path="/register-artifact"
+          element={<ArtifactRegistrationPage />}
+        />
       </Routes>
     </BrowserRouter>
   );
