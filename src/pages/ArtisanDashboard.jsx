@@ -34,23 +34,34 @@ export const ArtisanDashboard = () => {
   const [artisan, setArtisan] = useState(null);
   const refreshArtisanStatus = async () => {
     try {
-      if (!artisan?.did) return;
+      if (!artisan?.artisan_id) {
+        addToast("Missing artisan ID", "error");
+        return;
+      }
 
-      const { data } = await api.getArtisan(artisan.did);
+      const { data } = await api.getArtisanById(
+        artisan.artisan_id
+      );
 
-      setArtisan((prev) => ({
-        ...prev,
-        ...data,
-      }));
+      setArtisan(data);
 
-      addToast("Identity updated from registry", "success");
+      if (data.did) {
+        addToast("Identity approved and activated", "success");
+      } else {
+        addToast("Still pending review", "info");
+      }
 
     } catch (err) {
       console.error(err);
-      addToast("Identity still pending approval", "error");
+
+      addToast(
+        err?.response?.data?.error ||
+        "Failed to refresh artisan",
+        "error"
+      );
     }
   };
-    const [registered, setRegistered] = useState(false);
+  const [registered, setRegistered] = useState(false);
   const [form, setForm] = useState({
     name: "",
     craft_type: "",

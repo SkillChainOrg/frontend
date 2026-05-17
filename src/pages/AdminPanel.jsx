@@ -45,28 +45,36 @@ export const AdminPanel = () => {
 
   const handleApprove = async (id) => {
     try {
-      const { data } = await api.approveArtisan(id);
+      const response = await api.approveArtisan(id);
+
+      console.log("Approval response:", response.data);
+
+      setArtisans(prev =>
         prev.map(a =>
           a.id === id
             ? {
                 ...a,
                 status: "approved",
-                did: data.did,
-                algorand_wallet: data.algorand_wallet,
+                did: response.data.did,
+                algorand_wallet: response.data.algorand_wallet,
               }
             : a
         )
+      );
+
       addToast('Artisan approved successfully', 'success');
+
     } catch (err) {
-      console.error(err);
+      console.error("Approval error:", err);
 
       addToast(
-        err?.message || 'Approval failed',
+        err?.response?.data?.detail ||
+        err?.message ||
+        'Approval failed',
         'error'
       );
     }
   };
-
   const handleReject = async (id) => {
     try {
       await api.rejectArtisan(id);

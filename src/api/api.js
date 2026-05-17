@@ -57,6 +57,8 @@ export const registerArtisan = (data) => api.post('/register-artisan', data);
 export const addArtwork = (formData) => api.post('/add-artwork', formData, {
   headers: { 'Content-Type': 'multipart/form-data' }
 });
+export const getArtisanById = (artisanId) =>
+  api.get(`/artisan/id/${encodeURIComponent(artisanId)}`);
 export const getArtisan = (did) => api.get(`/artisan/${did}`);
 
 // Payments (Domestic settlement — Razorpay)
