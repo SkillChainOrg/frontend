@@ -78,7 +78,6 @@ export const verifyPayment = ({ razorpay_order_id, razorpay_payment_id, razorpay
   });
 
 // Artwork object (provenance-first)
-export const getArtwork = (artworkId) => api.get(`/artwork/${artworkId}`);
 
 // Admin
 export const getPendingArtisans = () => api.get('/admin/artisans/pending');
