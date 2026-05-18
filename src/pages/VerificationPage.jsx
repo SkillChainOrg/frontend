@@ -65,6 +65,7 @@ export const VerificationPage = () => {
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
   const [searchParams] = useSearchParams();
+  const [artisanData, setArtisanData] = useState(null);
 
   useEffect(() => {
     if (!file || file.type === "application/pdf") {
@@ -90,11 +91,33 @@ export const VerificationPage = () => {
 
       const { data } = await api.getArtworkVerification(artworkId);
 
+      let artisanProfile = null;
+
+      if (data.artisan_did) {
+        try {
+          const artisanResponse = await getArtisan(data.artisan_did);
+
+          artisanProfile = artisanResponse.data;
+
+          setArtisanData(artisanProfile);
+
+        } catch (artisanErr) {
+          console.error("Failed to load artisan profile", artisanErr);
+        }
+      }
+
       const normalized = normalizeResult({
         verified: true,
 
-        artisan: "Verified Artisan",
-        artisan_name: "Verified Artisan",
+        artisan:
+          artisanProfile?.name ||
+          artisanProfile?.artisan_name ||
+          "Verified Artisan",
+
+        artisan_name:
+          artisanProfile?.name ||
+          artisanProfile?.artisan_name ||
+          "Verified Artisan",
 
         artisan_did: data.artisan_did,
 
@@ -106,8 +129,8 @@ export const VerificationPage = () => {
 
         doc_type: "Registered cultural artifact",
 
-        trust_grade: "A",
-        trust_score: "Verified",
+        trust_grade: "Verified",
+        trust_score: "Authentic",
 
         signature_valid: true,
         hmac_valid: true,
@@ -119,7 +142,9 @@ export const VerificationPage = () => {
 
     } catch (err) {
       console.error(err);
+
       addToast("Failed to load artwork provenance", "error");
+
     } finally {
       setLoading(false);
     }
@@ -514,7 +539,7 @@ export const VerificationPage = () => {
                           Verified Artist Identity
                         </div>
                         <div className="font-serif text-3xl leading-tight mb-4 text-[#2B1D16] dark:text-[#F5ECDE]">
-                          {result.verified ? artistLabel : "Identity unavailable"}
+                          {artisanData?.name || result.artistName || "Identity unavailable"}
                         </div>
 
                         <div className="space-y-3 text-sm text-[#5C4636] dark:text-[#D7C6B4]">
@@ -522,7 +547,7 @@ export const VerificationPage = () => {
                             <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-1">
                               DID
                             </div>
-                            <div className="break-all">{artistDid || "No DID resolved"}</div>
+                            <div className="break-all">{artisanData?.did || artistDid || "No DID resolved"}</div>
                           </div>
 
                           <div>
@@ -636,6 +661,25 @@ export const VerificationPage = () => {
                             <div className="font-mono text-sm break-all">{artistDid}</div>
                           </div>
                           <CopyButton text={artistDid} label="DID" />
+                        </div>
+                      )}
+                      {artisanData?.craft_type && (
+                        <div>
+                          <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-1">
+                            Craft Tradition
+                          </div>
+
+                          <div>{artisanData.craft_type}</div>
+                        </div>
+                      )}
+
+                      {artisanData?.location && (
+                        <div>
+                          <div className="uppercase tracking-[0.2em] text-xs text-[#8B694D] mb-1">
+                            Region
+                          </div>
+
+                          <div>{artisanData.location}</div>
                         </div>
                       )}
 
