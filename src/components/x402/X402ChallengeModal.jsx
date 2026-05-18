@@ -219,8 +219,10 @@ export const X402ChallengeModal = ({
   const [walletAddress, setWalletAddress] = useState("");
   const [txResult, setTxResult] = useState(null);
   const price = artwork?.price_algo ?? "1.5";
-  const resolvedArtworkId = Number(artworkId || artwork?.id);
+  const resolvedArtworkId = artwork?.id;
   console.log("Resolved artwork id:", resolvedArtworkId);
+  console.log("Artwork object in modal:", artwork);
+
 
   useEffect(() => {
     let mounted = true;
@@ -251,7 +253,7 @@ export const X402ChallengeModal = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            artwork_id: resolvedArtworkId,
+            artwork_id: parseInt(String(resolvedArtworkId).replace("art_", ""), 10),
             collector_name: collectorName || "Anonymous",
             collector_email: collectorEmail || "",
           }),
@@ -259,6 +261,7 @@ export const X402ChallengeModal = ({
       );
 
       const initialData = await initialResponse.json();
+      console.log("402 RESPONSE", initialData);
 
       if (initialResponse.ok) {
         const resolvedTxId = initialData.tx_id || "";
@@ -290,17 +293,18 @@ export const X402ChallengeModal = ({
         throw new Error(initialData?.error || "Acquisition failed");
       }
 
+      const requirements = initialData?.payment_requirements || {};
+
       const challengeNonce = getChallengeNonce(
-        initialData?.challenge ||
-          initialData?.challenge_nonce ||
-          initialData?.nonce
+        requirements.challenge_nonce
       );
-      const amount = BigInt(initialData?.amount ?? 0);
+      const amount = BigInt(requirements.amount ?? 0);
       const appId = Number(
-        initialData?.app_id || import.meta.env.VITE_ARTWORK_MARKETPLACE_APP_ID
+        requirements.app_id ||
+        import.meta.env.VITE_ARTWORK_MARKETPLACE_APP_ID
       );
-      const receiver = initialData?.receiver;
-      const requiredBoxes = getRequiredBoxNames(initialData);
+      const receiver = requirements.receiver;
+      const requiredBoxes = requirements.boxes || [];
 
       if (!challengeNonce) {
         throw new Error("Missing x402 challenge nonce");
@@ -345,7 +349,9 @@ export const X402ChallengeModal = ({
           acquireMethod.getSelector(),
           stringAbiType.encode(artworkIdArg),
         ],
-        boxes: requiredBoxes.map((boxName) => toBoxReference(boxName, appId)),
+        boxes: requiredBoxes.map((box) =>
+          toBoxReference(box.name, appId)
+        ),
         suggestedParams,
       });
 
@@ -372,7 +378,7 @@ export const X402ChallengeModal = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            artwork_id: resolvedArtworkId,
+            artwork_id: parseInt(String(resolvedArtworkId).replace("art_", ""), 10),
             collector_name: collectorName || "Anonymous",
             collector_email: collectorEmail || "",
             tx_id: appCallTxId,
