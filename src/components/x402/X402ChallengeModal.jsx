@@ -249,7 +249,7 @@ export const X402ChallengeModal = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            artwork_id: artwork?.id,
+            artwork_id: Number(artwork?.id),
             collector_name: collectorName || "Anonymous",
             collector_email: collectorEmail || "",
           }),
@@ -370,7 +370,7 @@ export const X402ChallengeModal = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            artwork_id: artwork?.id,
+            artwork_id: Number(artwork?.id),
             collector_name: collectorName || "Anonymous",
             collector_email: collectorEmail || "",
             tx_id: appCallTxId,
