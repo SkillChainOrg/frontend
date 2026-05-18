@@ -351,11 +351,13 @@ export default function ArtifactRegistrationPage() {
                 <div className="mt-8 flex flex-col items-center">
                   <div className="p-3 bg-white border border-[#d8c7ab] rounded-xl">
                     {console.log(`${window.location.origin}/verify?artwork=${result.artwork_id}`)}
-                    <QRCodeSVG
-                      value={`${window.location.origin}/verify?artwork=${result.artwork_id}`}
-                      size={180}
-                      level="H"
-                    />
+                    <div>
+                      <QRCodeSVG
+                        value={`${window.location.origin}/verify?artwork=${result.artwork_id}`}
+                        size={180}
+                        level="H"
+                      />
+                    </div>
                   </div>
 
                   <p className="text-xs text-[#8B694D] mt-4 text-center uppercase tracking-[0.18em]">
