@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getArtisan} from "../api/api";
 import { useTranslation } from "react-i18next";
 import {
   ShieldCheck,
