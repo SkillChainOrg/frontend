@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import algosdk from "algosdk";
+import { PeraWalletConnect } from "@perawallet/connect";
 import {
   X,
   Wallet,
   ArrowRight,
   CheckCircle2,
-  ShieldCheck,
   Zap,
   Lock,
   Unlock,
@@ -15,7 +16,82 @@ import {
   Check,
 } from "lucide-react";
 
-// ─── HTTP 402 status card ────────────────────────────────────────────────────
+const peraWallet = new PeraWalletConnect({
+  chainId: 416002,
+});
+
+const algodClient = new algosdk.Algodv2(
+  "",
+  import.meta.env.VITE_ALGOD_URL,
+  ""
+);
+
+const acquireMethod = algosdk.ABIMethod.fromSignature("acquire(string)bool");
+const stringAbiType = algosdk.ABIType.from("string");
+const textEncoder = new TextEncoder();
+const testnetExplorerBase = "https://testnet.explorer.perawallet.app/tx/";
+
+const getChallengeNonce = (challenge) => {
+  if (!challenge) return "";
+  if (typeof challenge === "string") return challenge;
+
+  return challenge.nonce || challenge.challenge || challenge.value || "";
+};
+
+const getRequiredBoxNames = (payload) =>
+  payload?.required_box_names ||
+  payload?.required_boxes ||
+  payload?.box_names ||
+  [];
+
+const decodeBase64 = (value) =>
+  Uint8Array.from(window.atob(value), (char) => char.charCodeAt(0));
+
+const toBoxNameBytes = (boxName) => {
+  if (boxName instanceof Uint8Array) return boxName;
+
+  if (typeof boxName === "string") {
+    return textEncoder.encode(boxName);
+  }
+
+  if (boxName?.encoding === "base64" && typeof boxName?.value === "string") {
+    return decodeBase64(boxName.value);
+  }
+
+  if (typeof boxName?.base64 === "string") {
+    return decodeBase64(boxName.base64);
+  }
+
+  if (typeof boxName?.bytes === "string") {
+    return decodeBase64(boxName.bytes);
+  }
+
+  if (typeof boxName?.name === "string") {
+    return textEncoder.encode(boxName.name);
+  }
+
+  throw new Error("Unsupported box name format returned by backend");
+};
+
+const toBoxReference = (boxName, appId) => ({
+  appIndex: Number(boxName?.app_id || boxName?.appIndex || appId),
+  name: toBoxNameBytes(boxName),
+});
+
+const connectPeraWallet = async (selectedAccount) => {
+  const existingAccounts = await peraWallet.reconnectSession();
+
+  if (existingAccounts.length) {
+    return existingAccounts[0];
+  }
+
+  const newAccounts = await peraWallet.connect(
+    selectedAccount ? { selectedAccount } : undefined
+  );
+
+  return newAccounts[0];
+};
+
 const HttpStatusCard = ({ artworkTitle, price }) => (
   <motion.div
     initial={{ opacity: 0, y: 12 }}
@@ -23,7 +99,6 @@ const HttpStatusCard = ({ artworkTitle, price }) => (
     transition={{ delay: 0.15, duration: 0.5 }}
     className="font-mono text-xs bg-[#1C1410] border border-[#3a2a1e] rounded-sm overflow-hidden"
   >
-    {/* Terminal header */}
     <div className="flex items-center gap-2 px-4 py-2.5 bg-[#251a12] border-b border-[#3a2a1e]">
       <div className="flex gap-1.5">
         <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
@@ -33,13 +108,11 @@ const HttpStatusCard = ({ artworkTitle, price }) => (
       <span className="text-[#6b5040] ml-2 tracking-wider">HTTP RESPONSE</span>
     </div>
 
-    {/* Status line */}
     <div className="px-4 py-3 border-b border-[#3a2a1e]">
       <span className="text-[#B56A3E]">HTTP/1.1 </span>
       <span className="text-[#e8c97a] font-bold text-sm">402 Payment Required</span>
     </div>
 
-    {/* Headers */}
     <div className="px-4 py-3 space-y-1 border-b border-[#3a2a1e]">
       {[
         ["Content-Type", "application/json"],
@@ -55,7 +128,6 @@ const HttpStatusCard = ({ artworkTitle, price }) => (
       ))}
     </div>
 
-    {/* Body */}
     <div className="px-4 py-3 text-[#8a7060]">
       <span className="text-[#6b5040]">{"{ "}</span>
       <div className="pl-4 space-y-0.5">
@@ -82,14 +154,15 @@ const HttpStatusCard = ({ artworkTitle, price }) => (
   </motion.div>
 );
 
-// ─── Copy helper ─────────────────────────────────────────────────────────────
 const InlineCopy = ({ text }) => {
   const [copied, setCopied] = useState(false);
+
   const copy = () => {
     navigator.clipboard.writeText(text).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
+
   return (
     <button onClick={copy} className="ml-2 text-[#9A5A38] hover:text-[#B56A3E] transition">
       {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -97,7 +170,6 @@ const InlineCopy = ({ text }) => {
   );
 };
 
-// ─── Step indicators ──────────────────────────────────────────────────────────
 const StepBar = ({ current, steps }) => (
   <div className="flex items-center gap-0 mb-8">
     {steps.map((label, i) => (
@@ -134,7 +206,6 @@ const StepBar = ({ current, steps }) => (
   </div>
 );
 
-// ─── Main modal ───────────────────────────────────────────────────────────────
 export const X402ChallengeModal = ({
   artwork,
   onClose,
@@ -144,87 +215,209 @@ export const X402ChallengeModal = ({
   collectorEmail,
 }) => {
   const { t } = useTranslation();
-  const [step, setStep] = useState(0); // 0=challenge, 1=authorize, 2=processing, 3=success
+  const [step, setStep] = useState(0);
   const [walletAddress, setWalletAddress] = useState("");
   const [txResult, setTxResult] = useState(null);
   const price = artwork?.price_algo ?? "1.5";
 
-  // Auto-advance from processing after simulated delay
-  // In production: replace with actual api.acquireArtwork call
+  useEffect(() => {
+    let mounted = true;
+
+    peraWallet
+      .reconnectSession()
+      .then((accounts) => {
+        if (mounted && accounts.length) {
+          setWalletAddress(accounts[0]);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const handleAuthorize = async () => {
-  try {
-    setStep(2);
+    try {
+      setStep(2);
 
-    // REAL acquisition request
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/acquire-artwork`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          artwork_id: artwork?.id,
-          collector_name: collectorName || "Anonymous",
-          collector_email: collectorEmail || "",
-          wallet_address: walletAddress || "",
-        }),
+      const initialResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/acquire-artwork`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            artwork_id: artwork?.id,
+            collector_name: collectorName || "Anonymous",
+            collector_email: collectorEmail || "",
+          }),
+        }
+      );
+
+      const initialData = await initialResponse.json();
+
+      if (initialResponse.ok) {
+        const resolvedTxId = initialData.tx_id || "";
+
+        setTxResult({
+          tx_id: resolvedTxId,
+          provenance_event:
+            initialData.provenance_event || "ownership_transfer",
+          explorer_url:
+            initialData.explorer_url ||
+            `${testnetExplorerBase}${resolvedTxId}`,
+          new_owner:
+            initialData.new_owner ||
+            walletAddress ||
+            collectorEmail ||
+            "Anonymous",
+          network: initialData.network || "Algorand Testnet",
+        });
+
+        if (onOwnershipTransferred) {
+          await onOwnershipTransferred();
+        }
+
+        setStep(3);
+        return;
       }
-    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data?.error || "Acquisition failed");
-    }
-
-    /*
-      Expected backend response shape:
-
-      {
-        success: true,
-        tx_id: "...",
-        provenance_event: "...",
-        explorer_url: "...",
-        new_owner: "...",
-        network: "Algorand Testnet"
+      if (initialResponse.status !== 402) {
+        throw new Error(initialData?.error || "Acquisition failed");
       }
-    */
 
-    setTxResult({
-      tx_id: data.tx_id,
-      provenance_event:
-        data.provenance_event || "ownership_transfer",
-      explorer_url:
-        data.explorer_url ||
-        `https://testnet.explorer.perawallet.app/tx/${data.tx_id}`,
-      new_owner:
-        data.new_owner ||
-        walletAddress ||
-        collectorEmail ||
-        "Anonymous",
-      network: data.network || "Algorand Testnet",
-    });
+      const challengeNonce = getChallengeNonce(
+        initialData?.challenge ||
+          initialData?.challenge_nonce ||
+          initialData?.nonce
+      );
+      const amount = BigInt(initialData?.amount ?? 0);
+      const appId = Number(
+        initialData?.app_id || import.meta.env.VITE_ARTWORK_MARKETPLACE_APP_ID
+      );
+      const receiver = initialData?.receiver;
+      const requiredBoxes = getRequiredBoxNames(initialData);
 
-    // refresh artwork provenance
-    if (onOwnershipTransferred) {
-      await onOwnershipTransferred();
+      if (!challengeNonce) {
+        throw new Error("Missing x402 challenge nonce");
+      }
+
+      if (!amount) {
+        throw new Error("Missing Testnet payment amount");
+      }
+
+      if (!appId) {
+        throw new Error("Missing marketplace app id");
+      }
+
+      if (!receiver) {
+        throw new Error("Missing treasury receiver address");
+      }
+
+      if (!import.meta.env.VITE_ALGOD_URL) {
+        throw new Error("Missing VITE_ALGOD_URL");
+      }
+
+      const connectedAddress = await connectPeraWallet(walletAddress);
+      setWalletAddress(connectedAddress);
+
+      const suggestedParams = await algodClient.getTransactionParams().do();
+      const note = textEncoder.encode(challengeNonce);
+      const artworkIdArg = String(initialData?.artwork_id || artwork?.id || "");
+
+      const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+        sender: connectedAddress,
+        receiver,
+        amount,
+        note,
+        suggestedParams,
+      });
+
+      const appCallTxn = algosdk.makeApplicationCallTxnFromObject({
+        sender: connectedAddress,
+        appIndex: appId,
+        onComplete: algosdk.OnApplicationComplete.NoOpOC,
+        appArgs: [
+          acquireMethod.getSelector(),
+          stringAbiType.encode(artworkIdArg),
+        ],
+        boxes: requiredBoxes.map((boxName) => toBoxReference(boxName, appId)),
+        suggestedParams,
+      });
+
+      algosdk.assignGroupID([paymentTxn, appCallTxn]);
+
+      const signedGroup = await peraWallet.signTransaction([
+        [
+          { txn: paymentTxn },
+          { txn: appCallTxn },
+        ],
+      ]);
+
+      await algodClient.sendRawTransaction(signedGroup).do();
+
+      const appCallTxId = appCallTxn.txID();
+
+      await algosdk.waitForConfirmation(algodClient, appCallTxId, 4);
+
+      const verificationResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/acquire-artwork`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            artwork_id: artwork?.id,
+            collector_name: collectorName || "Anonymous",
+            collector_email: collectorEmail || "",
+            tx_id: appCallTxId,
+            wallet_address: connectedAddress,
+            challenge: challengeNonce,
+            challenge_nonce: challengeNonce,
+          }),
+        }
+      );
+
+      const verificationData = await verificationResponse.json();
+
+      if (!verificationResponse.ok) {
+        throw new Error(
+          verificationData?.error || "Backend could not verify grouped transaction"
+        );
+      }
+
+      setTxResult({
+        tx_id: verificationData.tx_id || appCallTxId,
+        provenance_event:
+          verificationData.provenance_event || "ownership_transfer",
+        explorer_url:
+          verificationData.explorer_url ||
+          `${testnetExplorerBase}${verificationData.tx_id || appCallTxId}`,
+        new_owner:
+          verificationData.new_owner ||
+          connectedAddress ||
+          collectorEmail ||
+          "Anonymous",
+        network: verificationData.network || "Algorand Testnet",
+      });
+
+      if (onOwnershipTransferred) {
+        await onOwnershipTransferred();
+      }
+
+      setStep(3);
+    } catch (err) {
+      console.error("x402 acquisition failed", err);
+      setStep(1);
+      alert(
+        err?.message ||
+          "Could not complete ownership transfer."
+      );
     }
-
-    // move to success state
-    setStep(3);
-
-  } catch (err) {
-    console.error("x402 acquisition failed", err);
-
-    setStep(1);
-
-    alert(
-      err?.message ||
-      "Could not complete ownership transfer."
-    );
-  }
-};
+  };
 
   const handleSuccess = () => {
     onSuccess?.(txResult);
@@ -240,7 +433,6 @@ export const X402ChallengeModal = ({
 
   return (
     <AnimatePresence>
-      {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -249,7 +441,6 @@ export const X402ChallengeModal = ({
         className="fixed inset-0 z-50 bg-[#1a0f08]/70 backdrop-blur-sm"
       />
 
-      {/* Modal panel */}
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 24 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -261,7 +452,6 @@ export const X402ChallengeModal = ({
           className="pointer-events-auto my-auto w-full max-w-xl max-h-[calc(100vh-2rem)] bg-[#F7F0E1] dark:bg-[#17120E] border border-[#d8c6aa] dark:border-[#3A2C21] shadow-[0_32px_80px_rgba(0,0,0,0.22)] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Modal header */}
           <div className="flex items-center justify-between px-7 pt-7 pb-5 border-b border-[#e2d4bc] dark:border-[#3A2C21]">
             <div>
               <div className="flex items-center gap-2 uppercase tracking-[0.28em] text-[9px] text-[#9A5A38] mb-1.5">
@@ -283,7 +473,6 @@ export const X402ChallengeModal = ({
           <div className="px-7 py-6 overflow-y-auto max-h-[calc(100vh-9rem)]">
             <StepBar current={step} steps={stepLabels} />
 
-            {/* ── STEP 0: 402 challenge ── */}
             <AnimatePresence mode="wait">
               {step === 0 && (
                 <motion.div
@@ -329,7 +518,6 @@ export const X402ChallengeModal = ({
                 </motion.div>
               )}
 
-              {/* ── STEP 1: authorize ── */}
               {step === 1 && (
                 <motion.div
                   key="authorize"
@@ -352,7 +540,7 @@ export const X402ChallengeModal = ({
                         <Wallet size={16} className="shrink-0 mt-[14px] text-[#9A5A38]" />
                         <input
                           className="flex-1 px-4 py-3 border border-[#cfb99d] dark:border-[#3A2C21] bg-[#fffaf1] dark:bg-[#1E1712] outline-none focus:border-[#B56A3E] transition font-mono text-sm break-all dark:text-[#F5ECDE]"
-                          placeholder="ALGO wallet address or leave blank for demo"
+                          placeholder="Pera Wallet address"
                           value={walletAddress}
                           onChange={(e) => setWalletAddress(e.target.value)}
                         />
@@ -386,7 +574,6 @@ export const X402ChallengeModal = ({
                 </motion.div>
               )}
 
-              {/* ── STEP 2: processing ── */}
               {step === 2 && (
                 <motion.div
                   key="processing"
@@ -434,7 +621,6 @@ export const X402ChallengeModal = ({
                 </motion.div>
               )}
 
-              {/* ── STEP 3: success ── */}
               {step === 3 && (
                 <motion.div
                   key="success"

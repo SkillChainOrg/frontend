@@ -107,7 +107,10 @@ export const ArtworkDetailPage = () => {
   try {
     const refreshed = await api.getArtwork(id);
 
-    setArtwork(refreshed.data.artwork);
+    setArtwork((current) => ({
+      ...refreshed.data.artwork,
+      image: current?.image || textileImg,
+    }));
     setProvenance(
       refreshed.data.provenance_history || []
       );
@@ -487,11 +490,13 @@ export const ArtworkDetailPage = () => {
         </div>
       </section>
     
-          {showAcquireModal && (
+      {showAcquireModal && (
         <X402ChallengeModal
           artwork={artwork}
           onClose={() => setShowAcquireModal(false)}
           onOwnershipTransferred={handleOwnershipTransferred}
+          collectorName={collector.name}
+          collectorEmail={collector.email}
         />
       )}
     </div>  
