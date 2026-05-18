@@ -219,6 +219,8 @@ export const X402ChallengeModal = ({
   const [walletAddress, setWalletAddress] = useState("");
   const [txResult, setTxResult] = useState(null);
   const price = artwork?.price_algo ?? "1.5";
+  const resolvedArtworkId = Number(artworkId || artwork?.id);
+  console.log("Resolved artwork id:", resolvedArtworkId);
 
   useEffect(() => {
     let mounted = true;
@@ -249,7 +251,7 @@ export const X402ChallengeModal = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            artwork_id: Number(artwork?.id),
+            artwork_id: resolvedArtworkId,
             collector_name: collectorName || "Anonymous",
             collector_email: collectorEmail || "",
           }),
@@ -325,7 +327,7 @@ export const X402ChallengeModal = ({
 
       const suggestedParams = await algodClient.getTransactionParams().do();
       const note = textEncoder.encode(challengeNonce);
-      const artworkIdArg = String(initialData?.artwork_id || artwork?.id || "");
+      const artworkIdArg = String(resolvedArtworkId);
 
       const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
         sender: connectedAddress,
@@ -370,7 +372,7 @@ export const X402ChallengeModal = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            artwork_id: Number(artwork?.id),
+            artwork_id: resolvedArtworkId,
             collector_name: collectorName || "Anonymous",
             collector_email: collectorEmail || "",
             tx_id: appCallTxId,
