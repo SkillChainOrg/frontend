@@ -97,9 +97,12 @@ export const VerificationPage = () => {
         try {
           const artisanResponse = await getArtisan(data.artisan_did);
 
-          artisanProfile = artisanResponse.data;
+          artisanProfile =
+            artisanResponse.data.artisan ||
+            artisanResponse.data;
 
           setArtisanData(artisanProfile);
+          console.log("ARTISAN PROFILE", artisanResponse.data);
 
         } catch (artisanErr) {
           console.error("Failed to load artisan profile", artisanErr);
