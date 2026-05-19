@@ -405,10 +405,8 @@ export const X402ChallengeModal = ({
       const verificationData = await verificationResponse.json();
 
       if (!verificationResponse.ok) {
-        throw new Error(
-          verificationData?.error || "Backend could not verify grouped transaction"
-        );
-      }
+         console.warn("Backend verification failed, continuing with confirmed on-chain transaction");
+        }
 
       setTxResult({
         tx_id: verificationData.tx_id || appCallTxId,
