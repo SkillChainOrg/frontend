@@ -371,13 +371,14 @@ export const X402ChallengeModal = ({
           { txn: appCallTxn },
         ],
       ]);
+      const appCallTxId = appCallTxn.txID();
 
       await algodClient.sendRawTransaction(signedGroup).do();
       console.log("Grouped transaction submitted:", appCallTxId);
       console.log("RAW TRANSACTION SUBMITTED");
       console.log("APP CALL TX ID:", appCallTxId);
 
-      const appCallTxId = appCallTxn.txID();
+      
 
       await algosdk.waitForConfirmation(algodClient, appCallTxId, 10);
       console.log("Transaction confirmed:", appCallTxId);
