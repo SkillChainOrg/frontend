@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Shield, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import heroImage from "../assets/hero.jpg";
+import logo from "../assets/skillchain_logo.png";
 
 export default function LandingPage() {
   const [entered, setEntered] = useState(false);
@@ -23,22 +24,31 @@ export default function LandingPage() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[100] bg-[#0B0806] flex items-center justify-center"
         >
-          <div className="text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+          <div className="text-center flex flex-col items-center">
+            <motion.img
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1 }}
-              className="font-serif text-7xl md:text-8xl text-[#F0E7D3] tracking-[-0.04em] mb-10"
+              src={logo}
+              alt="SkillChain"
+              className="w-56 md:w-72 opacity-90"
+            />
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 text-[10px] uppercase tracking-[0.35em] text-neutral-500"
             >
-              SkillChain
-            </motion.h1>
+              Blockchain-backed provenance for cultural assets
+            </motion.p>
 
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
               onClick={() => setEntered(true)}
-              className="uppercase tracking-[0.35em] text-xs text-[#D8B38A] border border-[#3E2D20] px-8 py-4 hover:bg-[#17110d] transition"
+              className="mt-12 uppercase tracking-[0.35em] text-xs text-[#D8B38A] border border-[#3E2D20] px-8 py-4 hover:bg-[#17110d] transition"
             >
               {t("landing_enter")}
             </motion.button>
