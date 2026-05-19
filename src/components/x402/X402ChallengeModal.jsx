@@ -352,11 +352,7 @@ export const X402ChallengeModal = ({
         boxes: [
           {
             appIndex: appId,
-            name: new TextEncoder().encode("owner:art_001"),
-          },
-          {
-            appIndex: appId,
-            name: new TextEncoder().encode("price:art_001"),
+            name: new TextEncoder().encode("art_001"),
           },
         ],
           suggestedParams,
