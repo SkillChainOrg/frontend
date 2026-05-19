@@ -242,6 +242,10 @@ export const X402ChallengeModal = ({
   }, []);
 
   const handleAuthorize = async () => {
+    console.log(
+      "MARKETPLACE APP ID",
+      import.meta.env.VITE_ARTWORK_MARKETPLACE_APP_ID
+    );
     try {
       setStep(2);
 
@@ -259,6 +263,7 @@ export const X402ChallengeModal = ({
           }),
         }
       );
+      
 
       const initialData = await initialResponse.json();
       console.log("402 RESPONSE", initialData);
