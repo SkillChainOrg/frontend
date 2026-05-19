@@ -74,7 +74,7 @@ const toBoxNameBytes = (boxName) => {
 };
 
 const toBoxReference = (boxName, appId) => ({
-  appIndex: Number(boxName?.app_id || boxName?.appIndex || appId),
+  appIndex: Number(appId),
   name: toBoxNameBytes(boxName),
 });
 
