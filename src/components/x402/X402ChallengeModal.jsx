@@ -242,10 +242,6 @@ export const X402ChallengeModal = ({
   }, []);
 
   const handleAuthorize = async () => {
-    console.log(
-      "MARKETPLACE APP ID",
-      import.meta.env.VITE_ARTWORK_MARKETPLACE_APP_ID
-    );
     try {
       setStep(2);
 
@@ -263,7 +259,6 @@ export const X402ChallengeModal = ({
           }),
         }
       );
-      
 
       const initialData = await initialResponse.json();
       console.log("402 RESPONSE", initialData);
@@ -354,11 +349,18 @@ export const X402ChallengeModal = ({
           acquireMethod.getSelector(),
           stringAbiType.encode(artworkIdArg),
         ],
-        boxes: requiredBoxes.map((box) =>
-          toBoxReference(box.name, appId)
-        ),
-        suggestedParams,
-      });
+        boxes: [
+          {
+            appIndex: appId,
+            name: new TextEncoder().encode("owner:art_001"),
+          },
+          {
+            appIndex: appId,
+            name: new TextEncoder().encode("price:art_001"),
+          },
+        ],
+          suggestedParams,
+        });
 
       algosdk.assignGroupID([paymentTxn, appCallTxn]);
 
@@ -378,6 +380,7 @@ export const X402ChallengeModal = ({
 
       await algosdk.waitForConfirmation(algodClient, appCallTxId, 10);
       console.log("Transaction confirmed:", appCallTxId);
+
       const verificationResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/acquire-artwork`,
         {
@@ -397,7 +400,6 @@ export const X402ChallengeModal = ({
         }
       );
 
-      console.log("VERIFICATION RESPONSE:", verificationData);
       const verificationData = await verificationResponse.json();
 
       if (!verificationResponse.ok) {
