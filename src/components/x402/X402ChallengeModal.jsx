@@ -365,11 +365,14 @@ export const X402ChallengeModal = ({
       ]);
 
       await algodClient.sendRawTransaction(signedGroup).do();
+      console.log("Grouped transaction submitted:", appCallTxId);
+      console.log("RAW TRANSACTION SUBMITTED");
+      console.log("APP CALL TX ID:", appCallTxId);
 
       const appCallTxId = appCallTxn.txID();
 
-      await algosdk.waitForConfirmation(algodClient, appCallTxId, 4);
-
+      await algosdk.waitForConfirmation(algodClient, appCallTxId, 10);
+      console.log("Transaction confirmed:", appCallTxId);
       const verificationResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/acquire-artwork`,
         {
@@ -389,6 +392,7 @@ export const X402ChallengeModal = ({
         }
       );
 
+      console.log("VERIFICATION RESPONSE:", verificationData);
       const verificationData = await verificationResponse.json();
 
       if (!verificationResponse.ok) {
