@@ -13,7 +13,7 @@ import indigoImg from "../assets/artworks/indigo.jpg";
 
 const artworks = [
   {
-    id: "art_001",
+    id: "art_101",
     title: "Handwoven Textile",
     region: "Kutch, India",
     price: "1.5 ALGO",
