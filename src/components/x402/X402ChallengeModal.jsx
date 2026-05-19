@@ -349,10 +349,15 @@ export const X402ChallengeModal = ({
           acquireMethod.getSelector(),
           stringAbiType.encode(artworkIdArg),
         ],
+        foreignApps: [appId],
         boxes: [
           {
             appIndex: appId,
-            name: new TextEncoder().encode("art_001"),
+            name: new TextEncoder().encode("owner:art_001"),
+          },
+          {
+            appIndex: appId,
+            name: new TextEncoder().encode("price:art_001"),
           },
         ],
           suggestedParams,
