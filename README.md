@@ -2,10 +2,14 @@
 
 > Blockchain-backed provenance infrastructure for artisan and cultural assets.
 
-**Live:** [frontend-rho-eight-42.vercel.app](https://frontend-rho-eight-42.vercel.app/)
+ **Live:** [frontend-rho-eight-42.vercel.app](https://frontend-rho-eight-42.vercel.app/)
+
 &nbsp;·&nbsp; **Backend API:** [skillchain-dcyr.onrender.com](https://skillchain-dcyr.onrender.com)
+
 &nbsp;·&nbsp; **Backend Repo:** [SkillChainOrg/backend](https://github.com/SkillChainOrg/backend)
+
 &nbsp;·&nbsp; **Vault Service:** [SkillChainOrg/skillchain-vault](https://github.com/SkillChainOrg/skillchain-vault)
+
 
 ---
 
