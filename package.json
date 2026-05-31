@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@perawallet/connect": "^1.5.2",
+    "@supabase/supabase-js": "^2.106.2",
     "algosdk": "^3.5.2",
     "axios": "^1.16.0",
     "framer-motion": "^12.38.0",

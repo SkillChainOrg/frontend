@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AuthCallback from './pages/AuthCallback'
 
 import LandingPage from "./pages/LandingPage";
 import { AdminPanel } from './pages/AdminPanel';
@@ -25,6 +26,10 @@ function App() {
         {/* ─────────────────────────────────────
             Core Product Routes
         ───────────────────────────────────── */}
+        <Route
+          path="/auth/callback"
+          element={<AuthCallback />}
+        />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/" element={<LandingPage />} />
 

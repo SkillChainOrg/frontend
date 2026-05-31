@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { supabase } from "../lib/supabase";
 import {
   UserPlus,
   ImagePlus,
@@ -128,17 +129,25 @@ export const ArtisanDashboard = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
-      const { data } = await api.registerArtisan(form);
-      setArtisan(data);
-      setRegistered(true);
-      addToast("Artisan record submitted for archival review", "success");
+
+      // Save form temporarily
+      localStorage.setItem(
+        "artisan_registration",
+        JSON.stringify(form)
+      );
+
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
     } catch (err) {
-      addToast("Registration failed", "error");
-    } finally {
-      setLoading(false);
+      console.error(err);
+      addToast("Authentication failed", "error");
     }
   };
 
