@@ -6,6 +6,7 @@ import { AdminPanel } from './pages/AdminPanel';
 
 import { VerificationPage } from "./pages/VerificationPage";
 import { ArtisanDashboard } from "./pages/ArtisanDashboard";
+import ArtisanOnboarding from "./pages/ArtisanOnboarding";
 import { ArtworkDetailPage } from "./pages/ArtworkDetailPage";
 
 import { ArtisanSearchPage } from "./pages/ArtisanSearchPage";
@@ -37,6 +38,7 @@ function App() {
         <Route path="/verify" element={<VerificationPage />} />
 
         {/* Artisan onboarding/dashboard */}
+        <Route path="/artisan/onboarding" element={<ArtisanOnboarding />} />
         <Route path="/artisan" element={<ArtisanDashboard />} />
 
         {/* Artwork detail + provenance + x402 */}

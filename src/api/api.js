@@ -70,7 +70,8 @@ export const verifyCertificate = (formData) => api.post('/verify', formData, {
   headers: { 'Content-Type': 'multipart/form-data' }
 });
 
-// Artisan
+// Artisan auth / onboarding
+export const getAuthMe = () => api.get('/auth/me');
 export const registerArtisan = (data) => api.post('/register-artisan', data);
 export const addArtwork = (formData) => api.post('/add-artwork', formData, {
   headers: { 'Content-Type': 'multipart/form-data' }

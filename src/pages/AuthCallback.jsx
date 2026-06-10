@@ -1,18 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import * as api from "../api/api";
+import { getAuthMe } from "../api/api";
 
 export default function AuthCallback() {
-
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const finishLogin = async () => {
-
       const {
-        data: { user }
+        data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) {
@@ -20,39 +17,17 @@ export default function AuthCallback() {
         return;
       }
 
-      const storedForm = localStorage.getItem(
-        "artisan_registration"
-      );
-
-      if (!storedForm) {
-        navigate("/");
-        return;
-      }
-
-      const form = JSON.parse(storedForm);
-
       try {
-
-        await api.registerArtisan({
-          ...form,
-          email: user.email,
-          supabase_id: user.id,
-        });
-
-        localStorage.removeItem(
-          "artisan_registration"
-        );
-
-        navigate("/artisan-dashboard");
-
+        const { data } = await getAuthMe();
+        navigate(data.has_profile ? "/artisan" : "/artisan/onboarding");
       } catch (err) {
         console.error(err);
+        navigate("/");
       }
     };
 
     finishLogin();
-
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

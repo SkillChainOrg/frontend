@@ -66,12 +66,7 @@ export const ArtisanDashboard = () => {
     }
   };
   const [registered, setRegistered] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    craft_type: "",
-    cluster: "",
-    location: "",
-  });
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [artworkForm, setArtworkForm] = useState({
     title: "",
     description: "",
@@ -80,6 +75,49 @@ export const ArtisanDashboard = () => {
   const [artworkFile, setArtworkFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setCheckingAuth(false);
+        return;
+      }
+
+      try {
+        const { data } = await api.getAuthMe();
+        if (data.has_profile && data.artisan) {
+          setArtisan(data.artisan);
+          setRegistered(true);
+        } else {
+          navigate("/artisan/onboarding", { replace: true });
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    loadProfile();
+  }, [navigate]);
+
+  const handleSignIn = async () => {
+    try {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      addToast("Authentication failed", "error");
+    }
+  };
 
   const steps = [
     {
@@ -127,28 +165,9 @@ export const ArtisanDashboard = () => {
     },
   ];
 
-  const handleRegister = async (e) => {
+  const handleSignInClick = async (e) => {
     e.preventDefault();
-
-    try {
-
-      // Save form temporarily
-      localStorage.setItem(
-        "artisan_registration",
-        JSON.stringify(form)
-      );
-
-      await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-
-    } catch (err) {
-      console.error(err);
-      addToast("Authentication failed", "error");
-    }
+    await handleSignIn();
   };
 
   const handleLookup = async () => {
@@ -168,6 +187,7 @@ export const ArtisanDashboard = () => {
       );
     }
   };
+
   const handleResolveDid = async () => {
     try {
       setLoadingDid(true);
@@ -209,6 +229,14 @@ export const ArtisanDashboard = () => {
     }
   };
 
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F0E7D3] dark:bg-[#0F0B08]">
+        Loading...
+      </div>
+    );
+  }
 
   if (!registered) {
     return (
@@ -348,60 +376,10 @@ export const ArtisanDashboard = () => {
                 {t("artisan_registration_body")}
               </p>
 
-              <form onSubmit={handleRegister} className="space-y-6">
-                <div>
-                  <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                    {t("artisan_name")}
-                  </label>
-                  <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    placeholder={t("artisan_name_placeholder")}
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                      {t("artisan_craft_tradition")}
-                    </label>
-                    <input
-                      className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                      required
-                      value={form.craft_type}
-                      onChange={(e) => setForm({ ...form, craft_type: e.target.value })}
-                      placeholder={t("artisan_craft_placeholder")}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                      {t("artisan_cluster")}
-                    </label>
-                    <input
-                      className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                      required
-                      value={form.cluster}
-                      onChange={(e) => setForm({ ...form, cluster: e.target.value })}
-                      placeholder={t("artisan_cluster_placeholder")}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">
-                    {t("artisan_place_of_practice")}
-                  </label>
-                  <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                    required
-                    value={form.location}
-                    onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    placeholder={t("artisan_place_placeholder")}
-                  />
-                </div>
+              <form onSubmit={handleSignInClick} className="space-y-6">
+                <p className="text-[#5C4636] dark:text-[#CBB9A6] leading-relaxed">
+                  Sign in with your Google account to begin artisan onboarding.
+                </p>
 
                 <button
                   type="submit"
@@ -409,7 +387,7 @@ export const ArtisanDashboard = () => {
                   className="w-full bg-[#B56A3E] hover:bg-[#9f5730] transition duration-300 text-white py-5 text-lg tracking-wide shadow-xl disabled:opacity-50 flex items-center justify-center gap-3"
                 >
                   <UserPlus size={18} />
-                  {loading ? t("artisan_submit_loading") : t("artisan_submit")}
+                  {loading ? t("artisan_submit_loading") : "Sign In to Register"}
                 </button>
               </form>
             </motion.div>
@@ -578,7 +556,27 @@ export const ArtisanDashboard = () => {
                   </div>
                   <div className="text-lg font-medium">{artisan.location}</div>
                 </div>
+
+                {artisan.years_of_experience != null && (
+                  <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
+                    <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
+                      Experience
+                    </div>
+                    <div className="text-lg font-medium">
+                      {artisan.years_of_experience} years
+                    </div>
+                  </div>
+                )}
               </div>
+
+              {artisan.bio && (
+                <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
+                  <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">
+                    Bio
+                  </div>
+                  <div className="text-lg font-medium">{artisan.bio}</div>
+                </div>
+              )}
 
               {artisan.artisan_id && (
                 <div className="flex items-center gap-3 p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
