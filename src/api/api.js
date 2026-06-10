@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { supabase } from '../lib/supabase';
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 
@@ -23,7 +24,24 @@ export function getDidViewerUrl(did) {
 }
 
 // Request interceptor for auth headers
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
+  // Artisan authentication: attach the Supabase access token so the backend can
+  // verify the JWT (Authorization: Bearer <token>) and resolve the artisan from
+  // the `sub` claim. The header token is now the single source of truth for
+  // authentication — identity is no longer derived from a supabase_id sent in
+  // request bodies.
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+  } catch {
+    // No active session — the request proceeds unauthenticated and any
+    // protected backend route will respond with 401.
+  }
+
+  // Legacy institution / admin keys (unchanged — used by non-artisan flows).
   const apiKey = localStorage.getItem('institution_api_key');
   const adminKey = localStorage.getItem('admin_key');
   
