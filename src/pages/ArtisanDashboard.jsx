@@ -43,13 +43,11 @@ export const ArtisanDashboard = () => {
         return;
       }
 
-      const { data } = await api.getArtisanById(
-        artisan.artisan_id
-      );
+      const { data } = await api.getAuthMe();
 
-      setArtisan(data);
+      setArtisan(data.artisan);
 
-      if (data.did) {
+      if (data.artisan?.did) {
         addToast("Identity approved and activated", "success");
       } else {
         addToast("Still pending review", "info");
@@ -498,6 +496,7 @@ export const ArtisanDashboard = () => {
   return (
     <div className="min-h-screen bg-[#F0E7D3] dark:bg-[#0F0B08] text-[#2B1D16] dark:text-[#F5ECDE] transition-colors duration-500 px-6 py-12">
       <div className="max-w-7xl mx-auto"></div>
+        {artisan?.status === "pending" && (
         <div className="grid md:grid-cols-3 gap-6 mb-10">
           <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
             <div className="flex items-center gap-3 mb-5">
@@ -590,7 +589,7 @@ export const ArtisanDashboard = () => {
             </div>
           </div>
         </div>
-        
+        )}
 
           <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col justify-between">
             <div>
@@ -648,7 +647,7 @@ export const ArtisanDashboard = () => {
                       </div>
         
 
-        {artisan.did ? (
+        {artisan?.status === "approved" ? (
           <>
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
