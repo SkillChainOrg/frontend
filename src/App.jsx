@@ -7,6 +7,7 @@ import { AdminPanel } from './pages/AdminPanel';
 import { VerificationPage } from "./pages/VerificationPage";
 import { ArtisanDashboard } from "./pages/ArtisanDashboard";
 import ArtisanOnboarding from "./pages/ArtisanOnboarding";
+import PublicArtisanProfile from "./pages/PublicArtisanProfile";
 import { ArtworkDetailPage } from "./pages/ArtworkDetailPage";
 
 import { ArtisanSearchPage } from "./pages/ArtisanSearchPage";
@@ -60,6 +61,8 @@ function App() {
         {/* ─────────────────────────────────────
             Artisan Registry
         ───────────────────────────────────── */}
+
+        <Route path="/a/*" element={<PublicArtisanProfile />} />
 
         <Route
           path="/artisans/search"

@@ -685,6 +685,13 @@ export const ArtisanDashboard = () => {
                       {loadingDid ? "Resolving..." : "Resolve DID"}
                     </button>
 
+                    <Link
+                      to={`/a/${artisan.artisan_id}`}
+                      className="px-5 py-3 border border-[#B56A3E] text-[#B56A3E] rounded-lg hover:bg-[#B56A3E] hover:text-white transition"
+                    >
+                      View Public Profile
+                    </Link>
+
                     <a
                       href={api.getDidViewerUrl(artisan.did)}
                       target="_blank"
