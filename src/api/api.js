@@ -72,6 +72,7 @@ export const verifyCertificate = (formData) => api.post('/verify', formData, {
 
 // Artisan auth / onboarding
 export const getAuthMe = () => api.get('/auth/me');
+export const updateArtisanProfile = (data) => api.patch('/artisan/me/profile', data);
 export const registerArtisan = (data) => api.post('/register-artisan', data);
 export const addArtwork = (formData) => api.post('/add-artwork', formData, {
   headers: { 'Content-Type': 'multipart/form-data' }

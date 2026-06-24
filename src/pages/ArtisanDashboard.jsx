@@ -72,7 +72,22 @@ export const ArtisanDashboard = () => {
   });
   const [artworkFile, setArtworkFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    bio: "",
+    location: "",
+    profile_image: "",
+  });
   const { addToast } = useToast();
+
+  useEffect(() => {
+    if (!artisan) return;
+    setProfileForm({
+      bio: artisan.bio || "",
+      location: artisan.location || "",
+      profile_image: artisan.profile_image || "",
+    });
+  }, [artisan]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -115,6 +130,55 @@ export const ArtisanDashboard = () => {
       console.error(err);
       addToast("Authentication failed", "error");
     }
+  };
+
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setSavingProfile(true);
+    try {
+      const { data } = await api.updateArtisanProfile({
+        bio: profileForm.bio.trim(),
+        location: profileForm.location.trim(),
+        profile_image: profileForm.profile_image.trim() || null,
+      });
+      setArtisan(data.artisan);
+      addToast("Profile updated", "success");
+    } catch (err) {
+      addToast(err?.response?.data?.error || "Failed to update profile", "error");
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const buildActivityTimeline = () => {
+    if (!artisan) return [];
+    const events = [];
+
+    if (artisan.created_at) {
+      events.push({
+        key: "registration",
+        label: "Registration created",
+        date: artisan.created_at,
+      });
+    }
+    if (artisan.approved_at) {
+      events.push({
+        key: "approval",
+        label: "Identity approved",
+        date: artisan.approved_at,
+      });
+    }
+    (artisan.artworks || []).forEach((art, i) => {
+      if (art.created_at) {
+        events.push({
+          key: `artwork-${art.artwork_id || i}`,
+          label: `Artwork registered${art.title ? `: ${art.title}` : ""}`,
+          date: art.created_at,
+        });
+      }
+    });
+
+    return events.sort((a, b) => new Date(a.date) - new Date(b.date));
   };
 
   const steps = [
@@ -215,8 +279,9 @@ export const ArtisanDashboard = () => {
     formData.append("materials", artworkForm.materials);
 
     try {
-      const { data } = await api.addArtwork(formData);
-      setArtisan((prev) => ({ ...prev, artworks: [...(prev.artworks || []), data] }));
+      await api.addArtwork(formData);
+      const { data: me } = await api.getAuthMe();
+      setArtisan(me.artisan);
       setArtworkForm({ title: "", description: "", materials: "" });
       setArtworkFile(null);
       addToast("Artwork provenance record created", "success");
@@ -591,6 +656,7 @@ export const ArtisanDashboard = () => {
         </div>
         )}
 
+        {artisan?.status === "pending" && (
           <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col justify-between">
             <div>
               <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">
@@ -645,194 +711,259 @@ export const ArtisanDashboard = () => {
                           </div>
                         </div>
                       </div>
-        
+        )}
 
         {artisan?.status === "approved" ? (
           <>
-            <div className="grid md:grid-cols-3 gap-6 mb-10">
-              <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <Fingerprint className="text-[#B56A3E]" size={24} />
-                  <h2 className="text-2xl font-serif">Verified Identity</h2>
-                  <StatusBadge status="verified" text="Approved" />
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-3 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
-                    <span className="text-sm text-[#8B694D] w-20">DID</span>
+            {(() => {
+              const artworks = artisan.artworks || [];
+              const provenanceCount = artworks.filter((a) => a.tx_id).length;
+              const verificationCount = artisan.did ? 1 : 0;
+              const timeline = buildActivityTimeline();
 
-                    <code className="flex-1 font-mono text-sm truncate">
-                      {artisan.did}
-                    </code>
-
-                    <CopyButton text={artisan.did} label="DID" />
-                  </div>
-
-                  <div className="flex flex-wrap gap-4">
-                    <button
-                      onClick={() =>
-                        navigate('/register-artifact', {
-                          state: { artisan },
-                        })
-                      }
-                      className="mt-6 px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"
-                    >
-                      Register Artifact
-                    </button>
-                    <button
-                      onClick={handleResolveDid}
-                      className="px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"
-                    >
-                      {loadingDid ? "Resolving..." : "Resolve DID"}
-                    </button>
-
-                    <Link
-                      to={`/a/${artisan.artisan_id}`}
-                      className="px-5 py-3 border border-[#B56A3E] text-[#B56A3E] rounded-lg hover:bg-[#B56A3E] hover:text-white transition"
-                    >
-                      View Public Profile
-                    </Link>
-
-                    <a
-                      href={api.getDidViewerUrl(artisan.did)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-5 py-3 border border-[#B56A3E] text-[#B56A3E] rounded-lg hover:bg-[#B56A3E] hover:text-white transition"
-                    >
-                      View Identity Document
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col items-center justify-center">
-                <div className="p-3 bg-white dark:bg-[#1A1410] shadow-sm">
-                  <QRCodeSVG
-                    value={`${window.location.origin}/verify?did=${artisan.did}`}
-                    size={160}
-                    level="H"
-                  />
-                </div>
-                <p className="text-xs text-[#8B694D] mt-4 text-center uppercase tracking-[0.18em]">
-                  Scan to verify identity
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 mb-10">
-              <h3 className="text-2xl font-serif mb-5 flex items-center gap-2">
-                <ImagePlus size={20} className="text-[#B56A3E]" /> Register Artwork Provenance
-              </h3>
-
-              <form onSubmit={handleAddArtwork} className="space-y-5">
-                <FileUpload
-                  onFileSelect={setArtworkFile}
-                  accept="image/*"
-                  label="Upload artwork image"
-                  sublabel="Register a work to this verified artisan identity"
-                />
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                    placeholder="Artwork title"
-                    required
-                    value={artworkForm.title}
-                    onChange={(e) => setArtworkForm({ ...artworkForm, title: e.target.value })}
-                  />
-                  <input
-                    className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                    placeholder="Materials used"
-                    value={artworkForm.materials}
-                    onChange={(e) => setArtworkForm({ ...artworkForm, materials: e.target.value })}
-                  />
-                </div>
-
-                <textarea
-                  className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
-                  rows={4}
-                  placeholder="Describe the work, its process, and its cultural significance..."
-                  value={artworkForm.description}
-                  onChange={(e) => setArtworkForm({ ...artworkForm, description: e.target.value })}
-                />
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-[#B56A3E] hover:bg-[#9f5730] transition duration-300 text-white py-4 px-6 tracking-wide shadow-xl disabled:opacity-50 flex items-center gap-3"
-                >
-                  <ImagePlus size={18} /> Create Provenance Record
-                </button>
-              </form>
-            </div>
-
-            <h3 className="text-2xl font-serif mb-6">Registered Works</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <AnimatePresence>
-                {(artisan.artworks || []).map((art, i) => (
-                  <motion.div
-                    key={art.ipfs_cid || i}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] overflow-hidden"
-                  >
-                    <div className="aspect-square bg-[#eadcc5] relative overflow-hidden">
-                      {art.image_url ? (
-                        <img src={art.image_url} alt={art.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[#8B694D]">
-                          Artwork preview
+              return (
+                <>
+                  <section className="mb-10">
+                    <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">Overview</div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div className="md:col-span-2 bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+                        <div className="flex items-center gap-3 mb-6">
+                          <Fingerprint className="text-[#B56A3E]" size={24} />
+                          <h2 className="text-3xl font-serif">{artisan.name}</h2>
+                          <StatusBadge status="verified" text={artisan.status} />
                         </div>
-                      )}
-                    </div>
-                    <div className="p-5">
-                      <h4 className="font-serif text-xl mb-1">{art.title}</h4>
-                      <p className="text-sm text-[#6D5646] dark:text-[#CBB9A6] line-clamp-2 mb-3">{art.description}</p>
-
-                      {art.artwork_id ? (
-                        <Link
-                          to={`/artworks/${art.artwork_id}`}
-                          className="block w-full text-center mb-4 bg-[#1C1A16] hover:bg-black transition duration-300 text-[#F7F0E1] py-3 px-4 tracking-wide shadow-xl"
-                        >
-                          View Provenance Object
-                        </Link>
-                      ) : (
-                        <div className="w-full mb-4 text-xs text-[#8B694D] p-3 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
-                          This work is missing an internal id. Re-register to enable collector acquisition.
-                        </div>
-                      )}
-
-                      <div className="space-y-2 text-xs">
-                        <div className="flex items-center justify-between p-2 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
-                          <span className="text-[#8B694D]">IPFS CID</span>
-                          <div className="flex items-center gap-1 font-mono">
-                            {art.ipfs_cid?.slice(0, 12)}... <CopyButton text={art.ipfs_cid} />
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
+                            <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">Craft Type</div>
+                            <div className="text-lg font-medium">{artisan.craft_type}</div>
                           </div>
+                          <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
+                            <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">Location</div>
+                            <div className="text-lg font-medium">{artisan.location}</div>
+                          </div>
+                          <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
+                            <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">Status</div>
+                            <div className="text-lg font-medium capitalize">{artisan.status}</div>
+                          </div>
+                          {artisan.did && (
+                            <div className="p-4 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d] md:col-span-2">
+                              <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-1">DID</div>
+                              <div className="flex items-center gap-2">
+                                <code className="flex-1 font-mono text-sm break-all">{artisan.did}</code>
+                                <CopyButton text={artisan.did} label="DID" />
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center justify-between p-2 bg-[#fffaf1] dark:bg-[#1A1410] border border-[#d8c7ab] dark:border-[#2e241d]">
-                          <span className="text-[#8B694D]">Txn ID</span>
-                          <a
-                            href={`https://algoexplorer.io/tx/${art.txn_id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-[#B56A3E] hover:underline"
+                        <div className="flex flex-wrap gap-4 mt-6">
+                          <Link
+                            to={`/a/${artisan.artisan_id}`}
+                            className="px-5 py-3 border border-[#B56A3E] text-[#B56A3E] rounded-lg hover:bg-[#B56A3E] hover:text-white transition"
                           >
-                            View <ExternalLink size={12} />
-                          </a>
+                            View Public Profile
+                          </Link>
+                          <button
+                            onClick={() =>
+                              navigate("/register-artifact", { state: { artisan } })
+                            }
+                            className="px-5 py-3 bg-[#B56A3E] text-white rounded-lg hover:bg-[#9c5731] transition"
+                          >
+                            Register Artifact
+                          </button>
                         </div>
                       </div>
+                      {artisan.did && (
+                        <div className="bg-[#E8D9BE] dark:bg-[#16110D] border border-[#d3bea0] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 flex flex-col items-center justify-center">
+                          <div className="p-3 bg-white dark:bg-[#1A1410] shadow-sm">
+                            <QRCodeSVG
+                              value={`${window.location.origin}/verify?did=${artisan.did}`}
+                              size={160}
+                              level="H"
+                            />
+                          </div>
+                          <p className="text-xs text-[#8B694D] mt-4 text-center uppercase tracking-[0.18em]">
+                            Scan to verify identity
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                  </section>
 
-              {(artisan.artworks || []).length === 0 && (
-                <div className="col-span-full text-center py-12 text-[#8B694D] bg-[#F7EFE1] dark:bg-[#16110D] border border-dashed border-[#d8c7ab] dark:border-[#2e241d]">
-                  No artworks registered yet. Once approved, add the first work to this artisan identity.
-                </div>
-              )}
-            </div>
-        </>
+                  <section className="mb-10">
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {[
+                        { label: "Total artworks", value: artworks.length },
+                        { label: "Total provenance records", value: provenanceCount },
+                        { label: "Total identity verifications", value: verificationCount },
+                      ].map((card) => (
+                        <div
+                          key={card.label}
+                          className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-6"
+                        >
+                          <div className="text-xs uppercase tracking-[0.18em] text-[#8B694D] mb-2">{card.label}</div>
+                          <div className="text-4xl font-serif">{card.value}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="mb-10">
+                    <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">My Artworks</div>
+                    <div className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 mb-6">
+                      <h3 className="text-2xl font-serif mb-5 flex items-center gap-2">
+                        <ImagePlus size={20} className="text-[#B56A3E]" /> Register Artwork Provenance
+                      </h3>
+                      <form onSubmit={handleAddArtwork} className="space-y-5">
+                        <FileUpload
+                          onFileSelect={setArtworkFile}
+                          accept="image/*"
+                          label="Upload artwork image"
+                          sublabel="Register a work to this verified artisan identity"
+                        />
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <input
+                            className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
+                            placeholder="Artwork title"
+                            required
+                            value={artworkForm.title}
+                            onChange={(e) => setArtworkForm({ ...artworkForm, title: e.target.value })}
+                          />
+                          <input
+                            className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
+                            placeholder="Materials used"
+                            value={artworkForm.materials}
+                            onChange={(e) => setArtworkForm({ ...artworkForm, materials: e.target.value })}
+                          />
+                        </div>
+                        <textarea
+                          className="w-full px-4 py-4 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] text-black dark:text-[#F5ECDE] outline-none focus:border-[#B56A3E] transition"
+                          rows={4}
+                          placeholder="Describe the work, its process, and its cultural significance..."
+                          value={artworkForm.description}
+                          onChange={(e) => setArtworkForm({ ...artworkForm, description: e.target.value })}
+                        />
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className="bg-[#B56A3E] hover:bg-[#9f5730] transition duration-300 text-white py-4 px-6 tracking-wide shadow-xl disabled:opacity-50 flex items-center gap-3"
+                        >
+                          <ImagePlus size={18} /> Create Provenance Record
+                        </button>
+                      </form>
+                    </div>
+
+                    {artworks.length === 0 ? (
+                      <div className="text-center py-12 text-[#8B694D] bg-[#F7EFE1] dark:bg-[#16110D] border border-dashed border-[#d8c7ab] dark:border-[#2e241d]">
+                        You have not registered any artworks yet.
+                      </div>
+                    ) : (
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <AnimatePresence>
+                          {artworks.map((art, i) => (
+                            <motion.div
+                              key={art.artwork_id || art.ipfs_cid || i}
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] overflow-hidden"
+                            >
+                              <div className="aspect-square bg-[#eadcc5] relative overflow-hidden">
+                                {art.image_url ? (
+                                  <img src={art.image_url} alt={art.title} className="w-full h-full object-cover" />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-[#8B694D]">
+                                    Artwork preview
+                                  </div>
+                                )}
+                              </div>
+                              <div className="p-5">
+                                <h4 className="font-serif text-xl mb-1">{art.title}</h4>
+                                <p className="text-sm text-[#6D5646] dark:text-[#CBB9A6] line-clamp-2 mb-3">{art.description}</p>
+                                {art.artwork_id && (
+                                  <Link
+                                    to={`/artworks/${art.artwork_id}`}
+                                    className="block w-full text-center bg-[#1C1A16] hover:bg-black transition duration-300 text-[#F7F0E1] py-3 px-4 tracking-wide shadow-xl"
+                                  >
+                                    View Provenance Object
+                                  </Link>
+                                )}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    )}
+                  </section>
+
+                  <section className="mb-10">
+                    <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">Activity</div>
+                    <div className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10">
+                      {timeline.length === 0 ? (
+                        <p className="text-[#5C4636] dark:text-[#CBB9A6]">No activity recorded yet.</p>
+                      ) : (
+                        <div className="space-y-4">
+                          {timeline.map((event) => (
+                            <div
+                              key={event.key}
+                              className="flex items-start gap-4 border-b border-[#d8c7ab] dark:border-[#2e241d] pb-4 last:border-0"
+                            >
+                              <Clock3 className="text-[#B56A3E] shrink-0 mt-1" size={18} />
+                              <div>
+                                <div className="font-medium">{event.label}</div>
+                                <div className="text-sm text-[#8B694D]">{event.date}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </section>
+
+                  <section className="mb-10">
+                    <div className="uppercase tracking-[0.28em] text-xs text-[#9A5A38] mb-4">Profile Settings</div>
+                    <form
+                      onSubmit={handleSaveProfile}
+                      className="bg-[#F7EFE1] dark:bg-[#16110D] border border-[#d8c7ab] dark:border-[#2e241d] shadow-[0_10px_50px_rgba(0,0,0,0.08)] p-8 md:p-10 space-y-6"
+                    >
+                      <div>
+                        <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">Bio</label>
+                        <textarea
+                          className="w-full px-4 py-3 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] outline-none focus:border-[#B56A3E] min-h-[120px]"
+                          value={profileForm.bio}
+                          onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">Location</label>
+                        <input
+                          className="w-full px-4 py-3 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] outline-none focus:border-[#B56A3E]"
+                          value={profileForm.location}
+                          onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm uppercase tracking-[0.18em] text-[#8B694D] mb-2">Profile Image URL</label>
+                        <input
+                          type="url"
+                          className="w-full px-4 py-3 border border-[#cfb99d] dark:border-[#2e241d] bg-white dark:bg-[#1A1410] outline-none focus:border-[#B56A3E]"
+                          value={profileForm.profile_image}
+                          onChange={(e) => setProfileForm({ ...profileForm, profile_image: e.target.value })}
+                          placeholder="https://example.com/your-photo.jpg"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={savingProfile}
+                        className="bg-[#B56A3E] hover:bg-[#9f5730] transition text-white py-4 px-6 tracking-wide shadow-xl disabled:opacity-50"
+                      >
+                        {savingProfile ? "Saving..." : "Save Profile"}
+                      </button>
+                    </form>
+                  </section>
+                </>
+              );
+            })()}
+          </>
         ) : null}
 
       {showDidModal && (
